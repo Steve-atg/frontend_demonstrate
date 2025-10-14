@@ -1,17 +1,12 @@
 'use client';
 
 import React from 'react';
-import {
-  ProForm,
-  ProFormText,
-  ProFormSelect,
-} from '@ant-design/pro-components';
+import { ProForm, ProFormText } from '@ant-design/pro-components';
 import { Button, message } from 'antd';
 import {
   UserOutlined,
   LockOutlined,
   MailOutlined,
-  PhoneOutlined,
   TeamOutlined,
 } from '@ant-design/icons';
 
