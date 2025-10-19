@@ -1,0 +1,53 @@
+{
+  "$schema": "./node_modules/swagger-typescript-api/config.schema.json",
+  "name": "api-client",
+  "description": "Auto-generated API client for Money Tracker application",
+  "version": "1.0.0",
+  "environments": {
+    "local": {
+      "url": "http://localhost:8000/api/json",
+      "description": "Local development server"
+    },
+    "staging": {
+      "url": "https://staging-api.your-domain.com/api/json",
+      "description": "Staging environment API"
+    },
+    "production": {
+      "url": "https://api.your-domain.com/api/json",
+      "description": "Production environment API"
+    }
+  },
+  "output": {
+    "directory": "src/api/generated",
+    "filename": "api.ts"
+  },
+  "options": {
+    "httpClientType": "axios",
+    "modular": true,
+    "routeTypes": true,
+    "sortTypes": true,
+    "sortRoutes": true,
+    "extractRequestParams": true,
+    "extractResponseData": true,
+    "extractRequestBody": true,
+    "extractResponseError": true,
+    "prettier": {
+      "enable": true,
+      "configFile": ".prettierrc"
+    },
+    "eslint": {
+      "enable": false
+    }
+  },
+  "hooks": {
+    "preGeneration": [
+      "echo 'Starting API client generation...'",
+      "mkdir -p src/api/generated"
+    ],
+    "postGeneration": [
+      "echo 'API client generation completed!'",
+      "echo 'Generated files:'",
+      "ls -la src/api/generated/"
+    ]
+  }
+}

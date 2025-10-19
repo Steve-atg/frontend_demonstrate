@@ -1,22 +1,23 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import { ConfigProvider } from 'antd';
-import Navbar from "@/components/Navbar";
-import "./globals.css";
+import type { Metadata } from 'next';
+import { Geist, Geist_Mono } from 'next/font/google';
+import { ConfigProvider, App } from 'antd';
+import Navbar from '@/components/Navbar';
+import './globals.css';
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+  variable: '--font-geist-sans',
+  subsets: ['latin'],
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
 });
 
 export const metadata: Metadata = {
-  title: "MoneyTracker - Personal Finance Management",
-  description: "Take control of your finances with MoneyTracker. Track expenses, monitor income, and achieve your financial goals.",
+  title: 'MoneyTracker - Personal Finance Management',
+  description:
+    'Take control of your finances with MoneyTracker. Track expenses, monitor income, and achieve your financial goals.',
 };
 
 export default function RootLayout({
@@ -25,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang='en'>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
@@ -37,8 +38,10 @@ export default function RootLayout({
             },
           }}
         >
-          <Navbar />
-          {children}
+          <App>
+            <Navbar />
+            {children}
+          </App>
         </ConfigProvider>
       </body>
     </html>

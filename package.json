@@ -9,18 +9,27 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "api:generate": "node scripts/generate-api.js local",
+    "api:generate:prod": "node scripts/generate-api.js production",
+    "api:generate:staging": "node scripts/generate-api.js staging",
+    "api:generate:clean": "node scripts/generate-api.js local --clean",
+    "api:generate:help": "node scripts/generate-api.js --help",
+    "api:clean": "rm -rf src/api/generated && mkdir -p src/api/generated"
   },
   "dependencies": {
     "@ant-design/icons": "^6.1.0",
     "@ant-design/pro-components": "^2.8.10",
     "antd": "^5.27.4",
+    "axios": "^1.12.2",
     "next": "15.5.3",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "swr": "^2.3.6"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@openapitools/openapi-generator-cli": "^2.25.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
@@ -31,6 +40,7 @@
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-unused-imports": "^4.2.0",
     "prettier": "^3.6.2",
+    "swagger-typescript-api": "^13.2.15",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

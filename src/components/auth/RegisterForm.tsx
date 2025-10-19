@@ -1,39 +1,65 @@
 'use client';
 
 import React from 'react';
-import { ProForm, ProFormText } from '@ant-design/pro-components';
+import {
+  ProForm,
+  ProFormText,
+  ProFormSelect,
+} from '@ant-design/pro-components';
 import { Button, message } from 'antd';
 import {
   UserOutlined,
   LockOutlined,
   MailOutlined,
   TeamOutlined,
+  CalendarOutlined,
 } from '@ant-design/icons';
+import { useRegister } from '@/api/hooks';
+import type { CreateUserDto } from '@/api/generated/data-contracts';
 
 interface RegisterFormValues {
-  firstName: string;
-  lastName: string;
+  username: string;
   email: string;
-  phone?: string;
   password: string;
   confirmPassword: string;
-  role: string;
+  avatar?: string;
+  gender?: 'M' | 'F' | 'OTHER';
+  dateOfBirth?: string;
 }
 
 const RegisterForm: React.FC = () => {
+  const { trigger: register, isMutating, error } = useRegister();
+
   const handleSubmit = async (values: RegisterFormValues) => {
     try {
-      console.log('Register form values:', values);
-
       // Check if passwords match
       if (values.password !== values.confirmPassword) {
         message.error('Passwords do not match!');
         return false;
       }
 
-      // Here you would typically make an API call to register the user
+      // Prepare the data according to the API schema
+      const registerData: CreateUserDto = {
+        username: values.username,
+        email: values.email,
+        password: values.password,
+        ...(values.avatar && { avatar: values.avatar }),
+        ...(values.gender && { gender: values.gender }),
+        ...(values.dateOfBirth && {
+          dateOfBirth: new Date(values.dateOfBirth).toISOString(),
+        }),
+      };
+
+      // Call the register API using SWR mutation
+      const result = await register(registerData);
+
       message.success('Registration successful!');
+      console.log('Registration result:', result);
+
+      // You can redirect to login page or dashboard here
+      // router.push('/auth/login');
     } catch (error) {
+      console.error('Registration error:', error);
       message.error('Registration failed. Please try again.');
     }
   };
@@ -52,6 +78,7 @@ const RegisterForm: React.FC = () => {
             size: 'large',
             style: { width: '100%' },
             icon: <TeamOutlined />,
+            loading: isMutating,
           },
         }}
         layout='vertical'
@@ -69,6 +96,7 @@ const RegisterForm: React.FC = () => {
             { min: 2, message: 'Username must be at least 2 characters!' },
           ]}
         />
+
         <ProFormText
           name='email'
           label='Email'
@@ -93,12 +121,7 @@ const RegisterForm: React.FC = () => {
           }}
           rules={[
             { required: true, message: 'Please enter your password!' },
-            { min: 8, message: 'Password must be at least 8 characters!' },
-            {
-              pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-              message:
-                'Password must contain at least one uppercase letter, one lowercase letter, and one number!',
-            },
+            { min: 6, message: 'Password must be at least 6 characters!' },
           ]}
         />
 
@@ -121,6 +144,42 @@ const RegisterForm: React.FC = () => {
               },
             }),
           ]}
+        />
+
+        <ProFormSelect
+          name='gender'
+          label='Gender (Optional)'
+          fieldProps={{
+            size: 'large',
+            placeholder: 'Select your gender',
+          }}
+          options={[
+            { label: 'Male', value: 'M' },
+            { label: 'Female', value: 'F' },
+            { label: 'Other', value: 'OTHER' },
+          ]}
+        />
+
+        <ProFormText
+          name='dateOfBirth'
+          label='Date of Birth (Optional)'
+          fieldProps={{
+            size: 'large',
+            prefix: <CalendarOutlined className='text-gray-400' />,
+            placeholder: 'YYYY-MM-DD',
+            type: 'date',
+          }}
+        />
+
+        <ProFormText
+          name='avatar'
+          label='Avatar URL (Optional)'
+          fieldProps={{
+            size: 'large',
+            prefix: <UserOutlined className='text-gray-400' />,
+            placeholder: 'Enter avatar image URL',
+          }}
+          rules={[{ type: 'url', message: 'Please enter a valid URL!' }]}
         />
       </ProForm>
 

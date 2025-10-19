@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# API Client Generation
+# Note: We DO commit generated API files to track API changes
+# If you prefer to generate them in CI/CD, uncomment the line below:
+# /src/api/generated/

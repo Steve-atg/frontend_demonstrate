@@ -13,23 +13,23 @@ export default function AuthPage() {
   const [activeTab, setActiveTab] = useState('login');
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <Title level={2} className="mb-2">
+    <div className='min-h-screen bg-gray-50 flex items-center justify-center px-4'>
+      <div className='w-full max-w-md'>
+        <div className='text-center mb-8'>
+          <Title level={2} className='mb-2'>
             Welcome
           </Title>
-          <Text type="secondary">
+          <Text type='secondary'>
             Please sign in to your account or create a new one
           </Text>
         </div>
 
-        <Card className="shadow-lg">
+        <Card className='shadow-lg'>
           <Tabs
             activeKey={activeTab}
             onChange={setActiveTab}
             centered
-            size="large"
+            size='large'
             items={[
               {
                 key: 'login',
