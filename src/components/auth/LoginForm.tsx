@@ -23,7 +23,7 @@ const LoginForm: React.FC = () => {
   };
 
   return (
-    <div className="p-4">
+    <div className='p-4'>
       <ProForm<LoginFormValues>
         onFinish={handleSubmit}
         submitter={{
@@ -38,16 +38,16 @@ const LoginForm: React.FC = () => {
             icon: <UserOutlined />,
           },
         }}
-        layout="vertical"
+        layout='vertical'
       >
         <ProFormText
-          name="email"
+          name='email'
           fieldProps={{
             size: 'large',
-            prefix: <MailOutlined className="text-gray-400" />,
+            prefix: <MailOutlined className='text-gray-400' />,
             placeholder: 'Enter your email',
           }}
-          placeholder="Email"
+          placeholder='Email'
           rules={[
             { required: true, message: 'Please enter your email!' },
             { type: 'email', message: 'Please enter a valid email!' },
@@ -55,13 +55,13 @@ const LoginForm: React.FC = () => {
         />
 
         <ProFormText.Password
-          name="password"
+          name='password'
           fieldProps={{
             size: 'large',
-            prefix: <LockOutlined className="text-gray-400" />,
+            prefix: <LockOutlined className='text-gray-400' />,
             placeholder: 'Enter your password',
           }}
-          placeholder="Password"
+          placeholder='Password'
           rules={[
             { required: true, message: 'Please enter your password!' },
             { min: 6, message: 'Password must be at least 6 characters!' },
@@ -69,8 +69,8 @@ const LoginForm: React.FC = () => {
         />
       </ProForm>
 
-      <div className="mt-4 text-center">
-        <Button type="link" size="small">
+      <div className='mt-4 text-center'>
+        <Button type='link' size='small'>
           Forgot password?
         </Button>
       </div>
