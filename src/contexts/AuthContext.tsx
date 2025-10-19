@@ -47,10 +47,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // Only fetch user data if authenticated
   const {
-    data: user,
+    data: userResponse,
     error: userError,
     isLoading: isLoadingUser,
   } = useCurrentUser();
+
+  // Extract user data from the response object
+  const user = userResponse?.data;
 
   // Initialize auth state from localStorage on mount
   useEffect(() => {
@@ -81,8 +84,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       const response = await loginMutation(credentials);
 
-      // Type assertion since the API response type is not properly generated
-      const authResponse = response as any;
+      // Extract data from the axios response object
+      const authResponse = response?.data as any;
 
       if (authResponse?.access_token) {
         const { access_token, refresh_token } = authResponse;
@@ -133,8 +136,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         refresh_token: refreshToken,
       });
 
-      // Type assertion since the API response type is not properly generated
-      const refreshResponse = response as RefreshTokenResponseDto;
+      // Extract data from the axios response object
+      const refreshResponse = response?.data as RefreshTokenResponseDto;
 
       if (refreshResponse?.access_token) {
         const { access_token, refresh_token: newRefreshToken } =

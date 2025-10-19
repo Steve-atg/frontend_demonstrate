@@ -2,8 +2,9 @@
 
 import React from 'react';
 import { ProForm, ProFormText } from '@ant-design/pro-components';
-import { Button, message, Space } from 'antd';
+import { Button, App } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
+import { useLogin } from '@/api/hooks';
 
 interface LoginFormValues {
   email: string;
@@ -12,12 +13,17 @@ interface LoginFormValues {
 }
 
 const LoginForm: React.FC = () => {
+  const { trigger: login, isMutating: isLoggingIn } = useLogin();
+  const { message } = App.useApp();
+
   const handleSubmit = async (values: LoginFormValues) => {
     try {
-      console.log('Login form values:', values);
-      // Here you would typically make an API call to authenticate the user
+      console.log('Login attempt:', values);
+      const response = await login(values);
+      console.log('Login response:', response);
       message.success('Login successful!');
     } catch (error) {
+      console.error('Login error:', error);
       message.error('Login failed. Please try again.');
     }
   };
@@ -36,6 +42,7 @@ const LoginForm: React.FC = () => {
             size: 'large',
             style: { width: '100%' },
             icon: <UserOutlined />,
+            loading: isLoggingIn,
           },
         }}
         layout='vertical'

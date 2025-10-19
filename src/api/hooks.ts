@@ -4,11 +4,9 @@ import { authAPI, usersAPI, transactionsAPI } from './client';
 import type {
   LoginDto,
   RegisterDto,
-  UserResponseDto,
   CreateUserDto,
   UpdateUserDto,
   CreateTransactionDto,
-  TransactionResponseDto,
   UpdateTransactionDto,
 } from './generated/data-contracts';
 
@@ -22,7 +20,7 @@ export const useLogin = () => {
     '/auth/login',
     async (url: string, { arg }: { arg: LoginDto }) => {
       const response = await authAPI.authControllerLogin(arg);
-      return response.data;
+      return response;
     }
   );
 };
@@ -33,7 +31,7 @@ export const useRegister = () => {
     '/auth/register',
     async (url: string, { arg }: { arg: RegisterDto }) => {
       const response = await authAPI.authControllerRegister(arg);
-      return response.data;
+      return response;
     }
   );
 };
@@ -42,7 +40,7 @@ export const useRegister = () => {
 export const useProfile = () => {
   return useSWR('/auth/profile', async () => {
     const response = await authAPI.authControllerGetProfile();
-    return response.data;
+    return response;
   });
 };
 
@@ -50,7 +48,7 @@ export const useProfile = () => {
 export const useCurrentUser = () => {
   return useSWR('/auth/me', async () => {
     const response = await authAPI.authControllerGetCurrentUser();
-    return response.data;
+    return response;
   });
 };
 
@@ -60,7 +58,7 @@ export const useRefreshToken = () => {
     '/auth/refresh',
     async (url: string, { arg }: { arg: { refresh_token: string } }) => {
       const response = await authAPI.authControllerRefreshTokens(arg);
-      return response.data;
+      return response;
     }
   );
 };
@@ -71,7 +69,7 @@ export const useLogout = () => {
     '/auth/logout',
     async (url: string, { arg }: { arg?: { refresh_token: string } }) => {
       const response = await authAPI.authControllerLogout(arg);
-      return response.data;
+      return response;
     }
   );
 };
@@ -84,7 +82,7 @@ export const useLogout = () => {
 export const useUsers = () => {
   return useSWR('/users', async () => {
     const response = await usersAPI.usersControllerFindAll();
-    return response.data;
+    return response;
   });
 };
 
@@ -92,7 +90,7 @@ export const useUsers = () => {
 export const useUser = (id: string) => {
   return useSWR(id ? `/users/${id}` : null, async () => {
     const response = await usersAPI.usersControllerFindOne(id);
-    return response.data;
+    return response;
   });
 };
 
@@ -102,7 +100,7 @@ export const useCreateUser = () => {
     '/users',
     async (url: string, { arg }: { arg: CreateUserDto }) => {
       const response = await usersAPI.usersControllerCreate(arg);
-      return response.data;
+      return response;
     }
   );
 };
@@ -116,7 +114,7 @@ export const useUpdateUser = () => {
       { arg }: { arg: { id: string; data: UpdateUserDto } }
     ) => {
       const response = await usersAPI.usersControllerUpdate(arg.id, arg.data);
-      return response.data;
+      return response;
     }
   );
 };
@@ -127,7 +125,7 @@ export const useDeleteUser = () => {
     '/users/delete',
     async (url: string, { arg }: { arg: string }) => {
       const response = await usersAPI.usersControllerRemove(arg);
-      return response.data;
+      return response;
     }
   );
 };
@@ -136,7 +134,7 @@ export const useDeleteUser = () => {
 export const useMyProfile = () => {
   return useSWR('/users/me/profile', async () => {
     const response = await usersAPI.usersControllerGetMyProfile();
-    return response.data;
+    return response;
   });
 };
 
@@ -146,7 +144,7 @@ export const useUpdateMyProfile = () => {
     '/users/me/profile',
     async (url: string, { arg }: { arg: UpdateUserDto }) => {
       const response = await usersAPI.usersControllerUpdateMyProfile(arg);
-      return response.data;
+      return response;
     }
   );
 };
@@ -159,7 +157,7 @@ export const useUpdateMyProfile = () => {
 export const useTransactions = () => {
   return useSWR('/transactions', async () => {
     const response = await transactionsAPI.transactionsControllerFindAll();
-    return response.data;
+    return response;
   });
 };
 
@@ -167,7 +165,7 @@ export const useTransactions = () => {
 export const useTransaction = (id: string) => {
   return useSWR(id ? `/transactions/${id}` : null, async () => {
     const response = await transactionsAPI.transactionsControllerFindOne(id);
-    return response.data;
+    return response;
   });
 };
 
@@ -177,7 +175,7 @@ export const useCreateTransaction = () => {
     '/transactions',
     async (url: string, { arg }: { arg: CreateTransactionDto }) => {
       const response = await transactionsAPI.transactionsControllerCreate(arg);
-      return response.data;
+      return response;
     }
   );
 };
@@ -194,7 +192,7 @@ export const useUpdateTransaction = () => {
         arg.id,
         arg.data
       );
-      return response.data;
+      return response;
     }
   );
 };
@@ -205,7 +203,7 @@ export const useDeleteTransaction = () => {
     '/transactions/delete',
     async (url: string, { arg }: { arg: string }) => {
       const response = await transactionsAPI.transactionsControllerRemove(arg);
-      return response.data;
+      return response;
     }
   );
 };
@@ -215,7 +213,7 @@ export const useMyTransactions = () => {
   return useSWR('/transactions/me/transactions', async () => {
     const response =
       await transactionsAPI.transactionsControllerGetMyTransactions();
-    return response.data;
+    return response;
   });
 };
 
@@ -226,7 +224,7 @@ export const useCreateMyTransaction = () => {
     async (url: string, { arg }: { arg: CreateTransactionDto }) => {
       const response =
         await transactionsAPI.transactionsControllerCreateMyTransaction(arg);
-      return response.data;
+      return response;
     }
   );
 };

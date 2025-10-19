@@ -18,11 +18,14 @@ import type { CreateTransactionDto } from '@/api/generated/data-contracts';
 
 const TransactionsList: React.FC = () => {
   const {
-    data: transactions,
+    data: transactionResponse,
     error,
     isLoading,
     mutate: refreshTransactions,
   } = useMyTransactions();
+
+  // Extract data from the response object
+  const transactions = transactionResponse?.data;
 
   const { trigger: createTransaction, isMutating: isCreating } =
     useCreateMyTransaction();

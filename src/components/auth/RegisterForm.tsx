@@ -6,7 +6,7 @@ import {
   ProFormText,
   ProFormSelect,
 } from '@ant-design/pro-components';
-import { Button, message } from 'antd';
+import { Button, App } from 'antd';
 import {
   UserOutlined,
   LockOutlined,
@@ -29,6 +29,7 @@ interface RegisterFormValues {
 
 const RegisterForm: React.FC = () => {
   const { trigger: register, isMutating, error } = useRegister();
+  const { message } = App.useApp();
 
   const handleSubmit = async (values: RegisterFormValues) => {
     try {
