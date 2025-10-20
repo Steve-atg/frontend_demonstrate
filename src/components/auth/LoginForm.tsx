@@ -4,7 +4,8 @@ import React from 'react';
 import { ProForm, ProFormText } from '@ant-design/pro-components';
 import { Button, App } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
-import { useLogin } from '@/api/hooks';
+import { authAPI } from '@/api/client';
+import useAsyncLoadingHandler from '@/hooks/useAsyncLoadingHandler';
 
 interface LoginFormValues {
   email: string;
@@ -13,25 +14,27 @@ interface LoginFormValues {
 }
 
 const LoginForm: React.FC = () => {
-  const { trigger: login, isMutating: isLoggingIn } = useLogin();
   const { message } = App.useApp();
 
-  const handleSubmit = async (values: LoginFormValues) => {
-    try {
-      console.log('Login attempt:', values);
-      const response = await login(values);
-      console.log('Login response:', response);
-      message.success('Login successful!');
-    } catch (error) {
-      console.error('Login error:', error);
-      message.error('Login failed. Please try again.');
-    }
-  };
+  const { isLoading: isLoggingIn, handleFunction: login } =
+    useAsyncLoadingHandler<LoginFormValues>(async (values: LoginFormValues) => {
+      try {
+        const response = await authAPI.authControllerLogin(values);
+        if (response.status === 200) {
+          message.success('Login successful!');
+          return;
+        }
+
+        message.error('Login failed. Please check your credentials.');
+      } catch (error) {
+        console.error('Login error:', error);
+      }
+    });
 
   return (
     <div className='p-4'>
       <ProForm<LoginFormValues>
-        onFinish={handleSubmit}
+        onFinish={login}
         submitter={{
           searchConfig: {
             submitText: 'Sign In',

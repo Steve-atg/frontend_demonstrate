@@ -14,8 +14,9 @@ import {
   TeamOutlined,
   CalendarOutlined,
 } from '@ant-design/icons';
-import { useRegister } from '@/api/hooks';
 import type { CreateUserDto } from '@/api/generated/data-contracts';
+import { authAPI } from '@/api/client';
+import useAsyncLoadingHandler from '@/hooks/useAsyncLoadingHandler';
 
 interface RegisterFormValues {
   username: string;
@@ -28,47 +29,48 @@ interface RegisterFormValues {
 }
 
 const RegisterForm: React.FC = () => {
-  const { trigger: register, isMutating, error } = useRegister();
   const { message } = App.useApp();
+  const { isLoading: isRegistering, handleFunction: register } =
+    useAsyncLoadingHandler<RegisterFormValues>(
+      async (values: RegisterFormValues) => {
+        try {
+          // Check if passwords match
+          if (values.password !== values.confirmPassword) {
+            message.error('Passwords do not match!');
+            return false;
+          }
 
-  const handleSubmit = async (values: RegisterFormValues) => {
-    try {
-      // Check if passwords match
-      if (values.password !== values.confirmPassword) {
-        message.error('Passwords do not match!');
-        return false;
+          // Prepare the data according to the API schema
+          const registerData: CreateUserDto = {
+            username: values.username,
+            email: values.email,
+            password: values.password,
+            ...(values.avatar && { avatar: values.avatar }),
+            ...(values.gender && { gender: values.gender }),
+            ...(values.dateOfBirth && {
+              dateOfBirth: new Date(values.dateOfBirth).toISOString(),
+            }),
+          };
+
+          // Call the register API using SWR mutation
+          const result = await authAPI.authControllerRegister(registerData);
+
+          message.success('Registration successful!');
+          console.log('Registration result:', result);
+
+          // You can redirect to login page or dashboard here
+          // router.push('/auth/login');
+        } catch (error) {
+          console.error('Registration error:', error);
+          message.error('Registration failed. Please try again.');
+        }
       }
-
-      // Prepare the data according to the API schema
-      const registerData: CreateUserDto = {
-        username: values.username,
-        email: values.email,
-        password: values.password,
-        ...(values.avatar && { avatar: values.avatar }),
-        ...(values.gender && { gender: values.gender }),
-        ...(values.dateOfBirth && {
-          dateOfBirth: new Date(values.dateOfBirth).toISOString(),
-        }),
-      };
-
-      // Call the register API using SWR mutation
-      const result = await register(registerData);
-
-      message.success('Registration successful!');
-      console.log('Registration result:', result);
-
-      // You can redirect to login page or dashboard here
-      // router.push('/auth/login');
-    } catch (error) {
-      console.error('Registration error:', error);
-      message.error('Registration failed. Please try again.');
-    }
-  };
+    );
 
   return (
     <div className='p-4'>
       <ProForm<RegisterFormValues>
-        onFinish={handleSubmit}
+        onFinish={register}
         submitter={{
           searchConfig: {
             submitText: 'Create Account',
@@ -79,7 +81,7 @@ const RegisterForm: React.FC = () => {
             size: 'large',
             style: { width: '100%' },
             icon: <TeamOutlined />,
-            loading: isMutating,
+            loading: isRegistering,
           },
         }}
         layout='vertical'
