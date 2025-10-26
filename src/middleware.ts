@@ -19,12 +19,7 @@ export default withAuth(
   {
     callbacks: {
       authorized: ({ token, req }) => {
-        const { pathname } = req.nextUrl;
-        const isProtectedRoute =
-          pathname.startsWith('/admin-dashboard') ||
-          pathname.startsWith('/user-dashboard');
-
-        return !isProtectedRoute || !!token;
+        return true;
       },
     },
   }
