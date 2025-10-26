@@ -14,9 +14,10 @@ import {
   TeamOutlined,
   CalendarOutlined,
 } from '@ant-design/icons';
-import type { CreateUserDto } from '@/api/generated/data-contracts';
+import type { RegisterDto } from '@/api/generated/data-contracts';
 import { authAPI } from '@/api/client';
 import useAsyncLoadingHandler from '@/hooks/useAsyncLoadingHandler';
+import { Gender } from 'next-auth/providers/kakao';
 
 interface RegisterFormValues {
   username: string;
@@ -28,7 +29,11 @@ interface RegisterFormValues {
   dateOfBirth?: string;
 }
 
-const RegisterForm: React.FC = () => {
+interface RegisterFormProps {
+  onRegisterSuccess: () => void;
+}
+
+const RegisterForm: React.FC<RegisterFormProps> = ({ onRegisterSuccess }) => {
   const { message } = App.useApp();
   const { isLoading: isRegistering, handleFunction: register } =
     useAsyncLoadingHandler<RegisterFormValues>(
@@ -41,12 +46,12 @@ const RegisterForm: React.FC = () => {
           }
 
           // Prepare the data according to the API schema
-          const registerData: CreateUserDto = {
+          const registerData: RegisterDto = {
             username: values.username,
             email: values.email,
             password: values.password,
+            gender: values.gender as Gender,
             ...(values.avatar && { avatar: values.avatar }),
-            ...(values.gender && { gender: values.gender }),
             ...(values.dateOfBirth && {
               dateOfBirth: new Date(values.dateOfBirth).toISOString(),
             }),
@@ -55,11 +60,13 @@ const RegisterForm: React.FC = () => {
           // Call the register API using SWR mutation
           const result = await authAPI.authControllerRegister(registerData);
 
-          message.success('Registration successful!');
-          console.log('Registration result:', result);
+          if (result.status === 201) {
+            message.success('Registration successful!');
+            onRegisterSuccess();
+            return;
+          }
 
-          // You can redirect to login page or dashboard here
-          // router.push('/auth/login');
+          message.error('Registration failed with status:', result.status);
         } catch (error) {
           console.error('Registration error:', error);
           message.error('Registration failed. Please try again.');
@@ -70,6 +77,7 @@ const RegisterForm: React.FC = () => {
   return (
     <div className='p-4'>
       <ProForm<RegisterFormValues>
+        initialValues={{ gender: 'OTHER' }}
         onFinish={register}
         submitter={{
           searchConfig: {

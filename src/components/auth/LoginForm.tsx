@@ -15,7 +15,11 @@ interface LoginFormValues {
   remember?: boolean;
 }
 
-const LoginForm: React.FC = () => {
+interface LoginFormProps {
+  callbackUrl?: string;
+}
+
+const LoginForm: React.FC<LoginFormProps> = ({ callbackUrl }) => {
   const { message } = App.useApp();
   const router = useRouter();
 
@@ -47,8 +51,8 @@ const LoginForm: React.FC = () => {
           // Refresh the session
           const session = await getSession();
           console.log('👤 LoginForm: Session after login:', session);
-          // Redirect to dashboard or home page
-          router.push('/');
+          // Redirect to callback URL or home page
+          router.push(callbackUrl || '/');
         } else {
           console.log('⚠️ LoginForm: Unexpected result:', result);
           message.error('Login failed. Please try again.');

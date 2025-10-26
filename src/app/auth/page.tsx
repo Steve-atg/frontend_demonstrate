@@ -1,16 +1,19 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Card, Tabs, Typography, Space } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Card, Tabs, Typography, Space, Alert } from 'antd';
 import { UserOutlined, LoginOutlined } from '@ant-design/icons';
+import { useSearchParams } from 'next/navigation';
 import LoginForm from '@/components/auth/LoginForm';
 import RegisterForm from '@/components/auth/RegisterForm';
 
 const { Title, Text } = Typography;
-const { TabPane } = Tabs;
 
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState('login');
+  const searchParams = useSearchParams();
+  const message = searchParams.get('message');
+  const callbackUrl = searchParams.get('callbackUrl');
 
   return (
     <div className='min-h-screen bg-gray-50 flex items-center justify-center px-4'>
@@ -23,6 +26,16 @@ export default function AuthPage() {
             Please sign in to your account or create a new one
           </Text>
         </div>
+
+        {message && (
+          <Alert
+            message={message}
+            type='warning'
+            showIcon
+            className='mb-4'
+            closable
+          />
+        )}
 
         <Card className='shadow-lg'>
           <Tabs
@@ -39,7 +52,7 @@ export default function AuthPage() {
                     Login
                   </Space>
                 ),
-                children: <LoginForm />,
+                children: <LoginForm callbackUrl={callbackUrl || undefined} />,
               },
               {
                 key: 'register',
@@ -49,7 +62,11 @@ export default function AuthPage() {
                     Register
                   </Space>
                 ),
-                children: <RegisterForm />,
+                children: (
+                  <RegisterForm
+                    onRegisterSuccess={() => setActiveTab('login')}
+                  />
+                ),
               },
             ]}
           />
