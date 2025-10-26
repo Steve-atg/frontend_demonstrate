@@ -12,7 +12,6 @@ import OAuthProviders from './OAuthProviders';
 interface LoginFormValues {
   email: string;
   password: string;
-  remember?: boolean;
 }
 
 interface LoginFormProps {
