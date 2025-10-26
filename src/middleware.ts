@@ -14,9 +14,8 @@ export default withAuth(
 // Protect these routes
 export const config = {
   matcher: [
-    '/dashboard/:path*',
-    '/profile/:path*',
-    '/transactions/:path*',
+    '/admin-dashboard/*',
+    '/user-dashboard/*',
     // Add other protected routes here
   ],
 };
