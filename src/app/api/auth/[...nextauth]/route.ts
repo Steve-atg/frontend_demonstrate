@@ -2,24 +2,8 @@ import { authAPI } from '@/api/client';
 import NextAuth from 'next-auth';
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { log } from 'node:console';
 // import GoogleProvider from 'next-auth/providers/google';
 // import GitHubProvider from 'next-auth/providers/github';
-
-interface AuthResponseDto {
-  access_token: string;
-  refresh_token: string;
-  user: {
-    id: string;
-    username: string;
-    email: string;
-    userLevel: number;
-    avatar?: string;
-    gender: string;
-    dateOfBirth?: Date;
-    createdAt: Date;
-  };
-}
 
 export const authOptions: NextAuthOptions = {
   providers: [
