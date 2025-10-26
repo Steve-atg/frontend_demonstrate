@@ -2,29 +2,33 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useSession, signOut } from 'next-auth/react';
+import { Button } from 'antd';
+import { UserOutlined, LogoutOutlined } from '@ant-design/icons';
 
 export default function Navbar() {
   const pathname = usePathname();
+  const { data: session, status } = useSession();
 
   return (
-    <nav className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+    <nav className='bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 sticky top-0 z-50'>
+      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+        <div className='flex justify-between items-center h-16'>
           {/* Logo/Brand */}
-          <div className="flex-shrink-0">
-            <Link 
-              href="/" 
-              className="text-xl font-bold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+          <div className='flex-shrink-0'>
+            <Link
+              href='/'
+              className='text-xl font-bold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors'
             >
               MoneyTracker
             </Link>
           </div>
 
           {/* Navigation Links */}
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-4">
+          <div className='hidden md:block'>
+            <div className='ml-10 flex items-baseline space-x-4'>
               <Link
-                href="/"
+                href='/'
                 className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                   pathname === '/'
                     ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200'
@@ -33,24 +37,62 @@ export default function Navbar() {
               >
                 Home
               </Link>
-              <Link
-                href="/auth"
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                  pathname === '/auth'
-                    ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200'
-                    : 'text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700'
-                }`}
-              >
-                Sign In
-              </Link>
+
+              {session ? (
+                <>
+                  <span className='text-gray-600 dark:text-gray-300'>
+                    Welcome, {session.user?.name || session.user?.email}
+                  </span>
+                  <Button
+                    type='text'
+                    icon={<LogoutOutlined />}
+                    onClick={() => signOut({ callbackUrl: '/' })}
+                    className='text-gray-600 hover:text-gray-900 dark:text-gray-300'
+                  >
+                    Sign Out
+                  </Button>
+                </>
+              ) : (
+                <Link
+                  href='/auth'
+                  className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                    pathname === '/auth'
+                      ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200'
+                      : 'text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-700'
+                  }`}
+                >
+                  Sign In
+                </Link>
+              )}
             </div>
           </div>
 
+          {/* Mobile menu */}
+          <div className='md:hidden'>
+            {session ? (
+              <Button
+                type='primary'
+                icon={<LogoutOutlined />}
+                onClick={() => signOut({ callbackUrl: '/' })}
+                size='small'
+              >
+                Sign Out
+              </Button>
+            ) : (
+              <Link
+                href='/auth'
+                className='bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md text-sm font-medium transition-colors'
+              >
+                Sign In
+              </Link>
+            )}
+          </div>
+
           {/* Mobile menu button */}
-          <div className="md:hidden">
+          <div className='md:hidden'>
             <Link
-              href="/auth"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+              href='/auth'
+              className='bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-md text-sm font-medium transition-colors'
             >
               Sign In
             </Link>

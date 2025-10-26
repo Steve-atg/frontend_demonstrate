@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { ConfigProvider, App } from 'antd';
 import Navbar from '@/components/Navbar';
+import AuthProvider from '@/components/providers/AuthProvider';
 import './globals.css';
 
 const geistSans = Geist({
@@ -30,19 +31,21 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ConfigProvider
-          theme={{
-            token: {
-              colorPrimary: '#1677ff',
-              fontFamily: 'var(--font-geist-sans)',
-            },
-          }}
-        >
-          <App>
-            <Navbar />
-            {children}
-          </App>
-        </ConfigProvider>
+        <AuthProvider>
+          <ConfigProvider
+            theme={{
+              token: {
+                colorPrimary: '#1677ff',
+                fontFamily: 'var(--font-geist-sans)',
+              },
+            }}
+          >
+            <App>
+              <Navbar />
+              {children}
+            </App>
+          </ConfigProvider>
+        </AuthProvider>
       </body>
     </html>
   );

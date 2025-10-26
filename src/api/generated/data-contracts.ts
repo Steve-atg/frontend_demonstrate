@@ -10,7 +10,20 @@
  * ---------------------------------------------------------------
  */
 
-export type AuthResponseDto = object;
+export interface AuthResponseDto {
+  /**
+   * JWT access token
+   * @example "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+   */
+  access_token: string;
+  /**
+   * JWT refresh token
+   * @example "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+   */
+  refresh_token: string;
+  /** User information */
+  user: UserDataDto;
+}
 
 export interface CreateTransactionDto {
   /**
@@ -123,13 +136,90 @@ export interface RefreshTokenResponseDto {
   refresh_token: string;
 }
 
-export type RegisterDto = object;
+export interface RegisterDto {
+  /**
+   * URL of the user avatar
+   * @example "https://example.com/avatar.jpg"
+   */
+  avatar?: string;
+  /**
+   * Date of birth of the user
+   * @example "1990-01-15"
+   */
+  dateOfBirth?: string;
+  /**
+   * The email address of the user
+   * @example "john.doe@example.com"
+   */
+  email: string;
+  /**
+   * M, F, or OTHER
+   * @example "M"
+   */
+  gender: string;
+  /**
+   * The password for the user account
+   * @minLength 6
+   * @example "securePassword123"
+   */
+  password: string;
+  /**
+   * The username of the user
+   * @example "john_doe"
+   */
+  username: string;
+}
 
 export type TransactionResponseDto = object;
 
 export type UpdateTransactionDto = object;
 
 export type UpdateUserDto = object;
+
+export interface UserDataDto {
+  /**
+   * User avatar URL
+   * @example "https://example.com/avatar.jpg"
+   */
+  avatar?: string;
+  /**
+   * Account creation date
+   * @format date-time
+   * @example "2023-01-15T10:30:00.000Z"
+   */
+  createdAt: string;
+  /**
+   * User date of birth
+   * @format date-time
+   * @example "1990-01-15T00:00:00.000Z"
+   */
+  dateOfBirth?: string;
+  /**
+   * User email address
+   * @example "john.doe@example.com"
+   */
+  email: string;
+  /**
+   * User gender
+   * @example "M"
+   */
+  gender: "M" | "F" | "OTHER";
+  /**
+   * User ID
+   * @example "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+   */
+  id: string;
+  /**
+   * User level
+   * @example 1
+   */
+  userLevel: number;
+  /**
+   * Username
+   * @example "john_doe"
+   */
+  username: string;
+}
 
 export interface UserResponseDto {
   /**

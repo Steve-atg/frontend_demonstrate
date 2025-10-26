@@ -4,8 +4,10 @@ import React from 'react';
 import { ProForm, ProFormText } from '@ant-design/pro-components';
 import { Button, App } from 'antd';
 import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
-import { authAPI } from '@/api/client';
+import { signIn, getSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import useAsyncLoadingHandler from '@/hooks/useAsyncLoadingHandler';
+import OAuthProviders from './OAuthProviders';
 
 interface LoginFormValues {
   email: string;
@@ -15,19 +17,45 @@ interface LoginFormValues {
 
 const LoginForm: React.FC = () => {
   const { message } = App.useApp();
+  const router = useRouter();
 
   const { isLoading: isLoggingIn, handleFunction: login } =
     useAsyncLoadingHandler<LoginFormValues>(async (values: LoginFormValues) => {
       try {
-        const response = await authAPI.authControllerLogin(values);
-        if (response.status === 200) {
-          message.success('Login successful!');
+        console.log('🚀 LoginForm: Starting login with:', {
+          email: values.email,
+          password: values.password,
+        });
+
+        const result = await signIn('credentials', {
+          email: values.email,
+          password: values.password,
+          redirect: false,
+        });
+
+        console.log('📋 LoginForm: SignIn result:', result);
+
+        if (result?.error) {
+          console.log('❌ LoginForm: Login failed with error:', result.error);
+          message.error(`Login failed: ${result.error}`);
           return;
         }
 
-        message.error('Login failed. Please check your credentials.');
+        if (result?.ok) {
+          console.log('✅ LoginForm: Login successful!');
+          message.success('Login successful!');
+          // Refresh the session
+          const session = await getSession();
+          console.log('👤 LoginForm: Session after login:', session);
+          // Redirect to dashboard or home page
+          router.push('/');
+        } else {
+          console.log('⚠️ LoginForm: Unexpected result:', result);
+          message.error('Login failed. Please try again.');
+        }
       } catch (error) {
-        console.error('Login error:', error);
+        console.error('💥 LoginForm: Login error:', error);
+        message.error('An error occurred during login.');
       }
     });
 
@@ -84,6 +112,8 @@ const LoginForm: React.FC = () => {
           Forgot password?
         </Button>
       </div>
+
+      <OAuthProviders />
     </div>
   );
 };
