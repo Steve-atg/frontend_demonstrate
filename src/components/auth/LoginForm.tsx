@@ -36,22 +36,27 @@ const LoginForm: React.FC<LoginFormProps> = ({ callbackUrl }) => {
           redirect: false,
         });
 
-        console.log('📋 LoginForm: SignIn result:', result);
-
         if (result?.error) {
-          console.log('❌ LoginForm: Login failed with error:', result.error);
           message.error(`Login failed: ${result.error}`);
           return;
         }
 
         if (result?.ok) {
-          console.log('✅ LoginForm: Login successful!');
           message.success('Login successful!');
           // Refresh the session
           const session = await getSession();
-          console.log('👤 LoginForm: Session after login:', session);
+
+          const loginSuccessedUrl = () => {
+            if (session?.user.userLevel === 99) {
+              return '/admin-dashboard';
+            }
+            if (session?.user.userLevel && session.user.userLevel > 0) {
+              return `/user-dashboard/?id=${session.user.id}`;
+            }
+            return callbackUrl || '/';
+          };
           // Redirect to callback URL or home page
-          router.push(callbackUrl || '/');
+          router.push(loginSuccessedUrl());
         } else {
           console.log('⚠️ LoginForm: Unexpected result:', result);
           message.error('Login failed. Please try again.');

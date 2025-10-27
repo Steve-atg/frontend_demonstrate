@@ -31,11 +31,7 @@ export const authOptions: NextAuthOptions = {
           if (response.status === 200) {
             const user = response.data.user;
 
-            const userObject = {
-              id: user.id,
-              email: user.email,
-              name: user.username,
-            };
+            const userObject = user;
 
             return userObject;
           } else {
@@ -77,6 +73,7 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.userLevel = user.userLevel;
       }
       return token;
     },
@@ -84,6 +81,7 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       if (token && session.user) {
         session.user.id = token.id as string;
+        session.user.userLevel = token.userLevel as number;
       }
       return session;
     },

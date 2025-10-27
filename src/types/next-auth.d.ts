@@ -14,11 +14,13 @@ declare module 'next-auth' {
 
   interface User extends NextAuthUser {
     id: string;
+    userLevel: number;
   }
 }
 
 declare module 'next-auth/jwt' {
   interface JWT {
     id?: string;
+    userLevel?: number;
   }
 }
