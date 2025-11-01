@@ -10,11 +10,15 @@ declare module 'next-auth' {
       image?: string;
       userLevel: number;
     };
+    accessToken?: string; // Add access token to session
+    refreshToken?: string; // Add refresh token to session
   }
 
   interface User extends NextAuthUser {
     id: string;
     userLevel: number;
+    accessToken?: string; // Add access token to user
+    refreshToken?: string; // Add refresh token to user
   }
 }
 
@@ -22,5 +26,7 @@ declare module 'next-auth/jwt' {
   interface JWT {
     id?: string;
     userLevel?: number;
+    accessToken?: string; // Add access token to JWT
+    refreshToken?: string; // Add refresh token to JWT
   }
 }
