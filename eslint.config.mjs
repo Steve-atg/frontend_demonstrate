@@ -32,6 +32,8 @@ const eslintConfig = [
       ],
       // Avoid any type should cause errors
       '@typescript-eslint/no-explicit-any': 'error',
+      // Variables must be defined before use
+      'no-undef': 'error',
       // Additional import/export rules
       'no-duplicate-imports': 'error',
     },
