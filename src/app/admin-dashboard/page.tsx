@@ -1,4 +1,11 @@
-const AdminPage: React.FC = () => {
-  return <div className='text-white'>This is admin pages</div>;
+import UserTable from '@/components/admin-dashboard/UserTable';
+
+const AdminPage: React.FC = async () => {
+  return (
+    <div className='bg-white text-black'>
+      <UserTable />
+    </div>
+  );
 };
+
 export default AdminPage;

@@ -29,9 +29,13 @@ export const authOptions: NextAuthOptions = {
           const response = await authAPI.authControllerLogin(requestBody);
 
           if (response.status === 200) {
-            const user = response.data.user;
+            const { user, access_token, refresh_token } = response.data;
 
-            const userObject = user;
+            const userObject = {
+              ...user,
+              accessToken: access_token,
+              refreshToken: refresh_token,
+            };
 
             return userObject;
           } else {
@@ -67,6 +71,37 @@ export const authOptions: NextAuthOptions = {
 
   session: {
     strategy: 'jwt',
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+
+  cookies: {
+    sessionToken: {
+      name: 'next-auth.session-token',
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 30 * 24 * 60 * 60, // 30 days
+      },
+    },
+    callbackUrl: {
+      name: 'next-auth.callback-url',
+      options: {
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+      },
+    },
+    csrfToken: {
+      name: 'next-auth.csrf-token',
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+      },
+    },
   },
 
   callbacks: {
@@ -74,6 +109,8 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
         token.userLevel = user.userLevel;
+        token.accessToken = user.accessToken; // Store access token in JWT
+        token.refreshToken = user.refreshToken; // Store refresh token in JWT
       }
       return token;
     },
@@ -82,6 +119,8 @@ export const authOptions: NextAuthOptions = {
       if (token && session.user) {
         session.user.id = token.id as string;
         session.user.userLevel = token.userLevel as number;
+        session.accessToken = token.accessToken as string; // Add access token to session
+        session.refreshToken = token.refreshToken as string; // Add refresh token to session
       }
       return session;
     },

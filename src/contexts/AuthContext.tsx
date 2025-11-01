@@ -5,8 +5,8 @@ import { setAuthToken, clearAuthToken } from '@/api/client';
 import {
   useLogin,
   useLogout,
-  useCurrentUser,
   useRefreshToken,
+  useCurrentUser,
 } from '@/api/hooks';
 import type {
   LoginDto,
