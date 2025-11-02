@@ -1,17 +1,20 @@
 import UserTable from '@/components/admin-dashboard/UserTable';
 import { usersAPI } from '@/api/client';
-import { UserResponseDto } from '@/api/generated/data-contracts';
+import FilterUsersForm from '@/components/admin-dashboard/FilterUsersForm';
 
-const AdminPage: React.FC = async () => {
-  // Server-side API call - now returns clean data without axios details
+interface AdminPageProps {
+  searchParams: Record<string, string>;
+}
+const AdminPage: React.FC<AdminPageProps> = async ({ searchParams }) => {
+  const initialValues = { ...searchParams };
+
   try {
     const response = await usersAPI.usersControllerFindAll();
-    const userData = response.data.data; // Clean data without axios details
-
-    console.log('Clean user data:', userData);
+    const userData = response.data.data;
 
     return (
       <div className='bg-white text-black h-full'>
+        <FilterUsersForm initialValues={initialValues} />
         <UserTable tableData={userData ?? []} />
       </div>
     );
