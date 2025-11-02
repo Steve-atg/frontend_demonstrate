@@ -15,17 +15,14 @@ const securityWorker = async () => {
 
   if (typeof window === 'undefined') {
     // Server-side: use getServerSession
-    console.log('🚀 securityWorker: Server-side session retrieval');
     const serverSession = await getServerSession(authOptions);
     accessToken = serverSession?.accessToken;
   } else {
-    console.log('🚀 securityWorker: Client-side session retrieval');
     // Client-side: use getSession
     const clientSession = await getSession();
     accessToken = clientSession?.accessToken;
   }
 
-  console.log('🚀 securityWorker: Retrieved accessToken:', accessToken);
   if (accessToken) {
     return {
       headers: {
