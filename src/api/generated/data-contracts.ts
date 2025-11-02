@@ -115,6 +115,46 @@ export interface LoginDto {
   password: string;
 }
 
+export interface PaginatedUsersResponseDto {
+  /** Array of users */
+  data: UserResponseDto[];
+  /** Pagination metadata */
+  meta: PaginationMetaDto;
+}
+
+export interface PaginationMetaDto {
+  /**
+   * Whether there is a next page
+   * @example true
+   */
+  hasNextPage: boolean;
+  /**
+   * Whether there is a previous page
+   * @example false
+   */
+  hasPrevPage: boolean;
+  /**
+   * Number of items per page
+   * @example 10
+   */
+  limit: number;
+  /**
+   * Current page number
+   * @example 1
+   */
+  page: number;
+  /**
+   * Total number of users
+   * @example 150
+   */
+  total: number;
+  /**
+   * Total number of pages
+   * @example 15
+   */
+  totalPages: number;
+}
+
 export interface RefreshTokenDto {
   /**
    * Refresh token
@@ -175,6 +215,16 @@ export type TransactionResponseDto = object;
 export type UpdateTransactionDto = object;
 
 export type UpdateUserDto = object;
+
+export interface UpgradeUserDto {
+  /**
+   * The new user level to upgrade to
+   * @min 1
+   * @max 99
+   * @example 5
+   */
+  userLevel: number;
+}
 
 export interface UserDataDto {
   /**

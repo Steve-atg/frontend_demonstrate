@@ -11,7 +11,8 @@ export const useUsers = () => {
   return useSWR(
     token ? '/users' : null,
     async () => {
-      return await usersAPI.usersControllerFindAll();
+      const response = await usersAPI.usersControllerFindAll();
+      return response.data; // Return only the data, ignore axios details
     },
     {
       revalidateOnFocus: false,
@@ -28,7 +29,8 @@ export const useUser = (id: string) => {
   return useSWR(
     token && id ? `/users/${id}` : null,
     async () => {
-      return await usersAPI.usersControllerFindOne(id);
+      const response = await usersAPI.usersControllerFindOne(id);
+      return response.data; // Return only the data, ignore axios details
     },
     {
       revalidateOnFocus: false,
@@ -45,7 +47,8 @@ export const useMyProfile = () => {
   return useSWR(
     token ? '/users/me/profile' : null,
     async () => {
-      return await usersAPI.usersControllerGetMyProfile();
+      const response = await usersAPI.usersControllerGetMyProfile();
+      return response.data; // Return only the data, ignore axios details
     },
     {
       revalidateOnFocus: false,
@@ -59,7 +62,8 @@ export const useCreateUser = () => {
   return useSWRMutation(
     '/users',
     async (url: string, { arg }: { arg: CreateUserDto }) => {
-      return await usersAPI.usersControllerCreate(arg);
+      const response = await usersAPI.usersControllerCreate(arg);
+      return response.data; // Return only the data, ignore axios details
     }
   );
 };
@@ -72,7 +76,8 @@ export const useUpdateUser = () => {
       url: string,
       { arg }: { arg: { id: string; data: UpdateUserDto } }
     ) => {
-      return await usersAPI.usersControllerUpdate(arg.id, arg.data);
+      const response = await usersAPI.usersControllerUpdate(arg.id, arg.data);
+      return response.data; // Return only the data, ignore axios details
     }
   );
 };
@@ -82,7 +87,8 @@ export const useUpdateMyProfile = () => {
   return useSWRMutation(
     '/users/me/profile',
     async (url: string, { arg }: { arg: UpdateUserDto }) => {
-      return await usersAPI.usersControllerUpdateMyProfile(arg);
+      const response = await usersAPI.usersControllerUpdateMyProfile(arg);
+      return response.data; // Return only the data, ignore axios details
     }
   );
 };
@@ -92,7 +98,8 @@ export const useDeleteUser = () => {
   return useSWRMutation(
     '/users',
     async (url: string, { arg }: { arg: string }) => {
-      return await usersAPI.usersControllerRemove(arg);
+      const response = await usersAPI.usersControllerRemove(arg);
+      return response.data; // Return only the data, ignore axios details
     }
   );
 };
