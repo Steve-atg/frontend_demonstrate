@@ -1,14 +1,20 @@
 'use client';
-import React from 'react';
 import { Button, Table, Spin, Alert } from 'antd';
 import { UserResponseDto } from '@/api/generated/data-contracts';
-import { AxiosResponse } from 'axios';
+import { useSearchParams } from 'next/navigation';
+import { useUpdateMultipleSearchParams } from '@/hooks/useMultipleSearchParams';
 
 interface UsersTableProps {
   tableData?: UserResponseDto[];
 }
 
-const UsersTable: React.FC<UsersTableProps> = ({ tableData }) => {
+const UsersTable = ({ tableData }: UsersTableProps) => {
+  const updateMultipleSearchParams = useUpdateMultipleSearchParams();
+
+  const searchParams = useSearchParams();
+  const page = searchParams.get('page') || '1';
+  const limit = searchParams.get('limit') || '10';
+
   // Table columns configuration
   const columns = [
     {
@@ -56,6 +62,12 @@ const UsersTable: React.FC<UsersTableProps> = ({ tableData }) => {
           showQuickJumper: true,
           showTotal: (total, range) =>
             `${range[0]}-${range[1]} of ${total} users`,
+          async onChange(page, pageSize) {
+            await updateMultipleSearchParams({
+              page: page.toString(),
+              limit: pageSize.toString(),
+            });
+          },
         }}
       />
     </div>

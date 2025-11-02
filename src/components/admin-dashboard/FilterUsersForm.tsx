@@ -5,26 +5,26 @@ import {
   ProFormSelect,
   ProFormDatePicker,
   ProFormDigit,
+  ProFormInstance,
 } from '@ant-design/pro-components';
-import { Button, Space, Collapse } from 'antd';
+import { Button, Collapse } from 'antd';
 import { useUpdateMultipleSearchParams } from '../../hooks/useMultipleSearchParams';
 import {
   SearchOutlined,
   ClearOutlined,
   FilterOutlined,
 } from '@ant-design/icons';
+import { useRef } from 'react';
 
-interface FilterUsersFromValues {
+interface FilterUsersFormValues {
   bornAfter?: string;
   bornBefore?: string;
   createdAfter?: string;
   createdBefore?: string;
   email?: string;
   gender?: 'M' | 'F' | 'OTHER';
-  limit?: number;
   maxUserLevel?: number;
   minUserLevel?: number;
-  page?: number;
   search?: string;
   sortBy?: 'username' | 'email' | 'userLevel' | 'createdAt' | 'updatedAt';
   sortOrder?: 'desc' | 'asc';
@@ -33,12 +33,20 @@ interface FilterUsersFromValues {
 }
 
 interface FilterUsersFormProps {
-  initialValues?: FilterUsersFromValues;
+  initialValues?: FilterUsersFormValues;
 }
 
-const FilterUsersFrom: React.FC<FilterUsersFormProps> = ({ initialValues }) => {
+const FilterUsersForm = ({ initialValues }: FilterUsersFormProps) => {
   const updateMultipleSearchParams = useUpdateMultipleSearchParams();
-  const handleFinish = async (values: FilterUsersFromValues) => {
+
+  const formRef = useRef<ProFormInstance<FilterUsersFormValues>>(null);
+
+  // Sanitize initialValues to ensure it's a plain object
+  const sanitizedInitialValues = initialValues
+    ? JSON.parse(JSON.stringify(initialValues))
+    : {};
+
+  const handleFinish = async (values: FilterUsersFormValues) => {
     const convertedValues = Object.entries(values).reduce(
       (acc, [key, value]) => {
         if (value !== undefined && value !== null) acc[key] = String(value);
@@ -51,6 +59,27 @@ const FilterUsersFrom: React.FC<FilterUsersFormProps> = ({ initialValues }) => {
     await updateMultipleSearchParams(convertedValues);
   };
 
+  const handleReset = async () => {
+    await updateMultipleSearchParams({
+      bornAfter: null,
+      bornBefore: null,
+      createdAfter: null,
+      createdBefore: null,
+      email: null,
+      gender: null,
+      limit: null,
+      maxUserLevel: null,
+      minUserLevel: null,
+      page: null,
+      search: null,
+      sortBy: null,
+      sortOrder: null,
+      userLevel: null,
+      username: null,
+    });
+    formRef.current?.resetFields();
+  };
+
   const collapseItems = [
     {
       key: '1',
@@ -60,12 +89,23 @@ const FilterUsersFrom: React.FC<FilterUsersFormProps> = ({ initialValues }) => {
         </span>
       ),
       children: (
-        <ProForm<FilterUsersFromValues>
+        <ProForm<FilterUsersFormValues>
+          formRef={formRef}
+          initialValues={sanitizedInitialValues}
           onFinish={handleFinish}
-          initialValues={initialValues ?? {}}
           submitter={{
             render: (props, doms) => (
-              <Space size='small'>
+              <div
+                style={{
+                  gridColumn: '1 / -1',
+                  display: 'flex',
+                  justifyContent: 'flex-start',
+                  gap: '4px',
+                  marginTop: '8px',
+                  paddingTop: '8px',
+                  borderTop: '1px solid #f0f0f0',
+                }}
+              >
                 <Button
                   type='primary'
                   icon={<SearchOutlined />}
@@ -74,126 +114,126 @@ const FilterUsersFrom: React.FC<FilterUsersFormProps> = ({ initialValues }) => {
                 >
                   Filter
                 </Button>
-
                 <Button
                   icon={<ClearOutlined />}
-                  onClick={() => props.form?.resetFields()}
+                  onClick={handleReset}
                   size='small'
                 >
-                  Clear
+                  Reset
                 </Button>
-              </Space>
+              </div>
             ),
           }}
-          layout='inline'
+          layout='vertical'
           size='small'
-          style={{ padding: '12px' }}
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+            gap: '0px 8px',
+            alignItems: 'start',
+          }}
         >
+          {/* Search & Basic Filters */}
           <ProFormText
             name='search'
             label='Search'
             placeholder='Search users'
-            width='xs'
+            style={{ width: '100%' }}
           />
 
           <ProFormText
             name='username'
             label='Username'
-            placeholder='Username'
-            width='xs'
+            placeholder='Enter username'
+            style={{ width: '100%' }}
           />
 
           <ProFormText
             name='email'
             label='Email'
-            placeholder='Email'
-            width='xs'
+            placeholder='Enter email'
+            style={{ width: '100%' }}
           />
 
           <ProFormSelect
             name='gender'
             label='Gender'
-            placeholder='Gender'
-            width='xs'
+            placeholder='Select gender'
+            style={{ width: '100%' }}
             options={[
-              { label: 'M', value: 'M' },
-              { label: 'F', value: 'F' },
+              { label: 'Male', value: 'M' },
+              { label: 'Female', value: 'F' },
               { label: 'Other', value: 'OTHER' },
             ]}
           />
 
+          {/* User Level Filters */}
           <ProFormDigit
             name='userLevel'
-            label='Level'
-            placeholder='Level'
+            label='User Level'
+            placeholder='Exact level'
             min={1}
             max={99}
-            width='xs'
+            style={{ width: '100%' }}
           />
 
           <ProFormDigit
             name='minUserLevel'
             label='Min Level'
-            placeholder='Min'
+            placeholder='Minimum level'
             min={1}
             max={99}
-            width='xs'
+            style={{ width: '100%' }}
           />
 
           <ProFormDigit
             name='maxUserLevel'
             label='Max Level'
-            placeholder='Max'
+            placeholder='Maximum level'
             min={1}
             max={99}
-            width='xs'
+            style={{ width: '100%' }}
           />
 
+          {/* Date Filters */}
           <ProFormDatePicker
             name='createdAfter'
             label='Created After'
             placeholder='From date'
-            width='xs'
+            style={{ width: '100%' }}
           />
 
           <ProFormDatePicker
             name='createdBefore'
             label='Created Before'
             placeholder='To date'
-            width='xs'
+            style={{ width: '100%' }}
           />
 
+          {/* Sorting Options */}
           <ProFormSelect
             name='sortBy'
-            label='Sort'
-            placeholder='Sort by'
-            width='xs'
+            label='Sort By'
+            placeholder='Sort field'
+            style={{ width: '100%' }}
             options={[
               { label: 'Username', value: 'username' },
               { label: 'Email', value: 'email' },
-              { label: 'Level', value: 'userLevel' },
-              { label: 'Created', value: 'createdAt' },
+              { label: 'User Level', value: 'userLevel' },
+              { label: 'Created At', value: 'createdAt' },
+              { label: 'Updated At', value: 'updatedAt' },
             ]}
           />
 
           <ProFormSelect
             name='sortOrder'
-            label='Order'
-            placeholder='Order'
-            width='xs'
+            label='Sort Order'
+            placeholder='Order direction'
+            style={{ width: '100%' }}
             options={[
-              { label: 'Asc', value: 'asc' },
-              { label: 'Desc', value: 'desc' },
+              { label: 'Ascending', value: 'asc' },
+              { label: 'Descending', value: 'desc' },
             ]}
-          />
-
-          <ProFormDigit
-            name='limit'
-            label='Limit'
-            placeholder='Limit'
-            min={1}
-            max={100}
-            width='xs'
           />
         </ProForm>
       ),
@@ -207,4 +247,4 @@ const FilterUsersFrom: React.FC<FilterUsersFormProps> = ({ initialValues }) => {
   );
 };
 
-export default FilterUsersFrom;
+export default FilterUsersForm;
