@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, Tabs, Typography, Space, Alert } from 'antd';
 import { UserOutlined, LoginOutlined } from '@ant-design/icons';
 import { useSearchParams } from 'next/navigation';

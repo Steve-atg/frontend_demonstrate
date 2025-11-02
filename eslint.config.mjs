@@ -12,17 +12,14 @@ const compat = new FlatCompat({
 const eslintConfig = [
   ...compat.extends('next/core-web-vitals', 'next/typescript'),
   ...compat.extends('prettier'),
-  {
+  ...compat.config({
     plugins: ['prettier', 'unused-imports'],
     rules: {
       'prettier/prettier': 'error',
-      // Unused imports should cause errors
-      '@typescript-eslint/no-unused-vars': 'error',
-      'no-unused-vars': 'off', // Turn off base rule as it can report incorrect errors
-      // Enhanced unused imports detection
+      'linebreak-style': ['error', 'unix'],
       'unused-imports/no-unused-imports': 'error',
       'unused-imports/no-unused-vars': [
-        'error',
+        'warn',
         {
           vars: 'all',
           varsIgnorePattern: '^_',
@@ -30,12 +27,41 @@ const eslintConfig = [
           argsIgnorePattern: '^_',
         },
       ],
-      // Avoid any type should cause errors
-      '@typescript-eslint/no-explicit-any': 'error',
-      // Variables must be defined before use
-      'no-undef': 'error',
-      // Additional import/export rules
-      'no-duplicate-imports': 'error',
+    },
+  }),
+  {
+    files: ['*.ts', '*.tsx', '*.mts', '*.cts'],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.json'],
+      },
+    },
+    rules: {
+      'react/jsx-uses-react': 'off',
+      'react/react-in-jsx-scope': 'off',
+      '@typescript-eslint/no-unused-vars': ['error'],
+      '@typescript-eslint/no-explicit-any': ['error'],
+      '@typescript-eslint/no-unsafe-argument': ['error'],
+      '@typescript-eslint/no-unsafe-assignment': ['error'],
+      '@typescript-eslint/no-unsafe-call': ['error'],
+      '@typescript-eslint/no-unsafe-member-access': ['error'],
+      '@typescript-eslint/no-unsafe-return': ['error'],
+      'react/jsx-boolean-value': ['error', 'never'],
+      'react/jsx-curly-brace-presence': ['error', 'never'],
+      'react/self-closing-comp': [
+        'error',
+        {
+          component: true,
+          html: true,
+        },
+      ],
+      'prefer-template': 'error',
+      'arrow-body-style': ['error', 'as-needed'],
+      'react/jsx-pascal-case': [
+        'error',
+        { allowAllCaps: true, allowNamespace: true },
+      ],
+      '@next/next/no-async-client-component': 'error',
     },
   },
   {
