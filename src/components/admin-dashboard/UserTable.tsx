@@ -1,8 +1,9 @@
 'use client';
-import { Button, Table, Spin, Alert } from 'antd';
+import { Table } from 'antd';
 import { UserResponseDto } from '@/api/generated/data-contracts';
 import { useSearchParams } from 'next/navigation';
 import { useUpdateMultipleSearchParams } from '@/hooks/useMultipleSearchParams';
+import { formatDateTime } from '@/utils/dateFormatter';
 
 interface UsersTableProps {
   tableData?: UserResponseDto[];
@@ -36,13 +37,13 @@ const UsersTable = ({ tableData }: UsersTableProps) => {
       title: 'Created At',
       dataIndex: 'createdAt',
       key: 'createdAt',
-      render: (date: string) => new Date(date).toLocaleDateString(),
+      render: (date: string) => formatDateTime(date),
     },
     {
       title: 'Updated At',
       dataIndex: 'updatedAt',
       key: 'updatedAt',
-      render: (date: string) => new Date(date).toLocaleDateString(),
+      render: (date: string) => formatDateTime(date),
     },
   ];
 
@@ -57,7 +58,8 @@ const UsersTable = ({ tableData }: UsersTableProps) => {
         columns={columns}
         rowKey='id'
         pagination={{
-          pageSize: 10,
+          current: page ? parseInt(page) : 1,
+          pageSize: limit ? parseInt(limit) : 10,
           showSizeChanger: true,
           showQuickJumper: true,
           showTotal: (total, range) =>
