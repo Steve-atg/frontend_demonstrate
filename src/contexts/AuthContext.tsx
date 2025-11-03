@@ -1,12 +1,11 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { setAuthToken, clearAuthToken } from '@/api/client';
 import {
   useLogin,
   useLogout,
-  useCurrentUser,
   useRefreshToken,
+  useCurrentUser,
 } from '@/api/hooks';
 import type {
   LoginDto,
@@ -38,7 +37,6 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [accessToken, setAccessToken] = useState<string | null>(null);
 
   // SWR hooks
   const { trigger: loginMutation, isMutating: isLoggingIn } = useLogin();
@@ -61,8 +59,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const refreshToken = localStorage.getItem('refreshToken');
 
     if (token && refreshToken) {
-      setAccessToken(token);
-      setAuthToken(token);
       setIsAuthenticated(true);
     }
   }, []);
@@ -94,9 +90,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         localStorage.setItem('accessToken', access_token);
         localStorage.setItem('refreshToken', refresh_token);
 
-        // Set auth token for API clients
-        setAuthToken(access_token);
-        setAccessToken(access_token);
         setIsAuthenticated(true);
       }
     } catch (error) {
@@ -125,8 +118,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     localStorage.removeItem('refreshToken');
 
     // Clear auth token from API clients
-    clearAuthToken();
-    setAccessToken(null);
     setIsAuthenticated(false);
   };
 
@@ -148,8 +139,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         localStorage.setItem('refreshToken', newRefreshToken);
 
         // Update auth token for API clients
-        setAuthToken(access_token);
-        setAccessToken(access_token);
         setIsAuthenticated(true);
       }
     } catch (error) {

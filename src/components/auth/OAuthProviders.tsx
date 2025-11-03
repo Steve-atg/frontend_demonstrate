@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Button, Space, Divider } from 'antd';
+import { Space, Divider } from 'antd';
 // import { GoogleOutlined, GithubOutlined } from '@ant-design/icons';
 // import { signIn, getProviders } from 'next-auth/react';
 
