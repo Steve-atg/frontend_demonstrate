@@ -1,24 +1,20 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
-import { ConfigProvider, App } from 'antd';
-import Navbar from '@/components/Navbar';
-import AuthProvider from '@/components/providers/AuthProvider';
+import { Inter } from 'next/font/google';
 import './globals.css';
+import { ConfigProvider, App } from 'antd';
+import AuthProvider from '@/components/providers/AuthProvider';
+import Navbar from '@/components/Navbar';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const inter = Inter({
+  variable: '--font-inter',
   subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
   title: 'MoneyTracker - Personal Finance Management',
   description:
-    'Take control of your finances with MoneyTracker. Track expenses, monitor income, and achieve your financial goals.',
+    'The most intuitive way to manage your finances. Beautiful, simple, and secure.',
 };
 
 export default function RootLayout({
@@ -27,22 +23,40 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='en'>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+    <html lang='en' className={inter.variable}>
+      <body className='font-sans antialiased bg-white text-gray-900'>
         <AuthProvider>
           <ConfigProvider
             theme={{
               token: {
-                colorPrimary: '#1677ff',
-                fontFamily: 'var(--font-geist-sans)',
+                colorPrimary: '#007AFF',
+                colorSuccess: '#34C759',
+                colorWarning: '#FF9500',
+                colorError: '#FF3B30',
+                colorInfo: '#5AC8FA',
+                borderRadius: 12,
+                fontFamily:
+                  'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+                fontSize: 16,
+                lineHeight: 1.5,
+              },
+              components: {
+                Button: {
+                  borderRadius: 50,
+                  fontWeight: 500,
+                },
+                Card: {
+                  borderRadius: 24,
+                },
+                Input: {
+                  borderRadius: 12,
+                },
               },
             }}
           >
             <App>
               <Navbar />
-              {children}
+              <main className='min-h-screen'>{children}</main>
             </App>
           </ConfigProvider>
         </AuthProvider>

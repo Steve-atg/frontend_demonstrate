@@ -48,30 +48,100 @@ const UsersTable = ({ tableData }: UsersTableProps) => {
   ];
 
   return (
-    <div className='p-6'>
-      <div className='mb-6'>
-        <h2 className='text-2xl font-bold mb-4'>User Management</h2>
+    <div className='max-w-7xl mx-auto px-6 pb-12'>
+      {/* Header */}
+      <div className='mb-8'>
+        <h2 className='text-3xl font-semibold text-gray-900 tracking-tight mb-2'>
+          User Management
+        </h2>
+        <p className='text-lg text-gray-600'>
+          Manage and monitor user accounts with advanced filtering and
+          pagination.
+        </p>
       </div>
 
-      <Table
-        dataSource={tableData ?? []}
-        columns={columns}
-        rowKey='id'
-        pagination={{
-          current: page ? parseInt(page) : 1,
-          pageSize: limit ? parseInt(limit) : 10,
-          showSizeChanger: true,
-          showQuickJumper: true,
-          showTotal: (total, range) =>
-            `${range[0]}-${range[1]} of ${total} users`,
-          async onChange(page, pageSize) {
-            await updateMultipleSearchParams({
-              page: page.toString(),
-              limit: pageSize.toString(),
-            });
-          },
-        }}
-      />
+      {/* Table Container */}
+      <div className='backdrop-blur-xl bg-white/80 rounded-3xl shadow-2xl border-0 overflow-hidden'>
+        <Table
+          dataSource={tableData ?? []}
+          columns={columns}
+          rowKey='id'
+          className='apple-table'
+          pagination={{
+            current: page ? parseInt(page) : 1,
+            pageSize: limit ? parseInt(limit) : 10,
+            showSizeChanger: true,
+            showQuickJumper: true,
+            showTotal: (total, range) =>
+              `${range[0]}-${range[1]} of ${total} users`,
+            async onChange(page, pageSize) {
+              await updateMultipleSearchParams({
+                page: page.toString(),
+                limit: pageSize.toString(),
+              });
+            },
+            className: 'apple-pagination',
+          }}
+        />
+      </div>
+
+      <style jsx global>{`
+        .apple-table .ant-table {
+          background: transparent;
+          border-radius: 0;
+        }
+
+        .apple-table .ant-table-thead > tr > th {
+          background: rgba(59, 130, 246, 0.05);
+          border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+          color: #374151;
+          font-weight: 600;
+          font-size: 14px;
+          padding: 16px 24px;
+        }
+
+        .apple-table .ant-table-tbody > tr > td {
+          padding: 16px 24px;
+          border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+          font-size: 14px;
+        }
+
+        .apple-table .ant-table-tbody > tr:hover > td {
+          background: rgba(59, 130, 246, 0.03) !important;
+        }
+
+        .apple-table .ant-table-tbody > tr:last-child > td {
+          border-bottom: none;
+        }
+
+        .apple-pagination .ant-pagination-item {
+          border-radius: 8px;
+          border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .apple-pagination .ant-pagination-item-active {
+          background: linear-gradient(
+            135deg,
+            rgba(59, 130, 246, 0.1),
+            rgba(147, 51, 234, 0.1)
+          );
+          border-color: rgba(59, 130, 246, 0.4);
+        }
+
+        .apple-pagination .ant-pagination-item-active a {
+          color: #3b82f6;
+          font-weight: 600;
+        }
+
+        .apple-pagination .ant-pagination-options {
+          margin-left: 16px;
+        }
+
+        .apple-pagination .ant-select-selector {
+          border-radius: 8px;
+          border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+      `}</style>
     </div>
   );
 };
