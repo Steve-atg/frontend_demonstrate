@@ -70,10 +70,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ callbackUrl }) => {
   return (
     <div className='p-4'>
       <ProForm<LoginFormValues>
-        initialValues={{
-          email: 'chanhongyiu@hotmail.com',
-          password: '98827934',
-        }}
         onFinish={login}
         submitter={{
           searchConfig: {
