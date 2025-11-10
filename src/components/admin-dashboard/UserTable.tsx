@@ -1,5 +1,5 @@
 'use client';
-import { Button, Table } from 'antd';
+import { Table } from 'antd';
 import { UserResponseDto } from '@/api/generated/data-contracts';
 import { useSearchParams } from 'next/navigation';
 import { useUpdateMultipleSearchParams } from '@/hooks/useMultipleSearchParams';
