@@ -4,6 +4,8 @@ import { UserResponseDto } from '@/api/generated/data-contracts';
 import { useSearchParams } from 'next/navigation';
 import { useUpdateMultipleSearchParams } from '@/hooks/useMultipleSearchParams';
 import { formatDateTime } from '@/utils/dateFormatter';
+import DeleteUserButton from './DeleteUserButton';
+import EditUserButton from './EditUserButton';
 
 interface UsersTableProps {
   tableData?: UserResponseDto[];
@@ -44,6 +46,17 @@ const UsersTable = ({ tableData }: UsersTableProps) => {
       dataIndex: 'updatedAt',
       key: 'updatedAt',
       render: (date: string) => formatDateTime(date),
+    },
+    {
+      title: 'Action',
+      dataIndex: 'id',
+      key: 'id',
+      render: (id: string) => (
+        <div className='flex gap-1'>
+          <EditUserButton id={id} />
+          <DeleteUserButton id={id} />
+        </div>
+      ),
     },
   ];
 

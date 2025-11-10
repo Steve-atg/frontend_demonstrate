@@ -8,12 +8,14 @@ import {
   useCurrentUser,
 } from '@/api/hooks';
 import type {
+  AuthResponseDto,
   LoginDto,
   RefreshTokenResponseDto,
+  UserDataDto,
 } from '@/api/generated/data-contracts';
 
 interface AuthContextType {
-  user: any | null;
+  user: UserDataDto | null;
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (credentials: LoginDto) => Promise<void>;
@@ -81,7 +83,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const response = await loginMutation(credentials);
 
       // Extract data from the axios response object
-      const authResponse = response?.data as any;
+      const authResponse = response?.data as AuthResponseDto;
 
       if (authResponse?.access_token) {
         const { access_token, refresh_token } = authResponse;

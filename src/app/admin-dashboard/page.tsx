@@ -1,46 +1,106 @@
-'use client';
-
-import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
 import { usersAPI } from '@/api/client';
 import UserTable from '@/components/admin-dashboard/UserTable';
 import FilterUsersForm from '@/components/admin-dashboard/FilterUsersForm';
 import { UserResponseDto } from '@/api/generated/data-contracts';
-import { Spin, Alert } from 'antd';
+import { Alert } from 'antd';
+import { Suspense } from 'react';
 
-const AdminPage = () => {
-  const [userData, setUserData] = useState<UserResponseDto[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+interface FilterUsersFormValues {
+  search?: string;
+  username?: string;
+  email?: string;
+  gender?: 'M' | 'F' | 'OTHER';
+  userLevel?: number;
+  minUserLevel?: number;
+  maxUserLevel?: number;
+  bornAfter?: string;
+  bornBefore?: string;
+  createdAfter?: string;
+  createdBefore?: string;
+  sortBy?: 'username' | 'email' | 'userLevel' | 'createdAt' | 'updatedAt';
+  sortOrder?: 'asc' | 'desc';
+}
 
-  const searchParams = useSearchParams();
+interface AdminPageProps {
+  searchParams: {
+    search?: string;
+    username?: string;
+    email?: string;
+    gender?: 'M' | 'F' | 'OTHER';
+    userLevel?: string;
+    minUserLevel?: string;
+    maxUserLevel?: string;
+    bornAfter?: string;
+    bornBefore?: string;
+    createdAfter?: string;
+    createdBefore?: string;
+    sortBy?: 'username' | 'email' | 'userLevel' | 'createdAt' | 'updatedAt';
+    sortOrder?: 'asc' | 'desc';
+    page?: string;
+    limit?: string;
+  };
+}
 
-  // Extract only filter-related search params (exclude page and limit)
-  const search = searchParams.get('search') || undefined;
-  const username = searchParams.get('username') || undefined;
-  const email = searchParams.get('email') || undefined;
-  const gender = searchParams.get('gender') as 'M' | 'F' | 'OTHER' | undefined;
-  const userLevel = searchParams.get('userLevel')
-    ? Number(searchParams.get('userLevel'))
+// Loading component for Suspense
+function LoadingComponent() {
+  return (
+    <div className='min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex justify-center items-center'>
+      <div className='text-center'>
+        <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto'></div>
+        <p className='mt-4 text-gray-600 font-medium'>Loading users...</p>
+        <p className='mt-2 text-gray-500 text-sm'>Gathering user data...</p>
+      </div>
+    </div>
+  );
+}
+
+// Error component
+function ErrorComponent({
+  error,
+  filterInitialValues,
+}: {
+  error: string;
+  filterInitialValues: FilterUsersFormValues;
+}) {
+  return (
+    <div className='min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-6'>
+      <div className='max-w-4xl mx-auto pt-20'>
+        <Alert
+          message='Error Loading Users'
+          description={error}
+          type='error'
+          showIcon
+          className='mb-6 rounded-2xl border-0 shadow-lg'
+        />
+        <FilterUsersForm initialValues={filterInitialValues} />
+      </div>
+    </div>
+  );
+}
+
+async function AdminPage({ searchParams }: AdminPageProps) {
+  // Extract filter-related search params from server-side searchParams
+  const search = searchParams.search || undefined;
+  const username = searchParams.username || undefined;
+  const email = searchParams.email || undefined;
+  const gender = searchParams.gender;
+  const userLevel = searchParams.userLevel
+    ? Number(searchParams.userLevel)
     : undefined;
-  const minUserLevel = searchParams.get('minUserLevel')
-    ? Number(searchParams.get('minUserLevel'))
+  const minUserLevel = searchParams.minUserLevel
+    ? Number(searchParams.minUserLevel)
     : undefined;
-  const maxUserLevel = searchParams.get('maxUserLevel')
-    ? Number(searchParams.get('maxUserLevel'))
+  const maxUserLevel = searchParams.maxUserLevel
+    ? Number(searchParams.maxUserLevel)
     : undefined;
-  const bornAfter = searchParams.get('bornAfter') || undefined;
-  const bornBefore = searchParams.get('bornBefore') || undefined;
-  const createdAfter = searchParams.get('createdAfter') || undefined;
-  const createdBefore = searchParams.get('createdBefore') || undefined;
-  const sortBy = searchParams.get('sortBy') as
-    | 'username'
-    | 'email'
-    | 'userLevel'
-    | 'createdAt'
-    | 'updatedAt'
-    | undefined;
-  const sortOrder = searchParams.get('sortOrder') as 'desc' | 'asc' | undefined;
+  const bornAfter = searchParams.bornAfter || undefined;
+  const bornBefore = searchParams.bornBefore || undefined;
+  const createdAfter = searchParams.createdAfter || undefined;
+  const createdBefore = searchParams.createdBefore || undefined;
+  const sortBy = searchParams.sortBy;
+  const sortOrder = searchParams.sortOrder;
+  const page = searchParams.page ? Number(searchParams.page) : undefined;
+  const limit = searchParams.limit ? Number(searchParams.limit) : undefined;
 
   // Create filter initial values object
   const filterInitialValues = {
@@ -59,52 +119,37 @@ const AdminPage = () => {
     sortOrder,
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response =
-          await usersAPI.usersControllerFindAll(filterInitialValues);
-        setUserData(response.data.data || []);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load users');
-        console.error('Error fetching users:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Server-side data fetching
+  let userData: UserResponseDto[] = [];
+  let error: string | null = null;
 
-    fetchData();
-  }, [searchParams]);
-
-  if (loading) {
-    return (
-      <div className='min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex justify-center items-center'>
-        <div className='text-center'>
-          <Spin size='large' tip='Loading users...' />
-          <p className='mt-4 text-gray-600 font-medium'>
-            Gathering user data...
-          </p>
-        </div>
-      </div>
-    );
+  try {
+    const response = await usersAPI.usersControllerFindAll({
+      search,
+      username,
+      email,
+      gender,
+      userLevel,
+      minUserLevel,
+      maxUserLevel,
+      bornAfter,
+      bornBefore,
+      createdAfter,
+      createdBefore,
+      sortBy,
+      sortOrder,
+      page,
+      limit,
+    });
+    userData = response.data.data || [];
+  } catch (err) {
+    error = err instanceof Error ? err.message : 'Failed to load users';
+    console.error('Error fetching users:', err);
   }
 
   if (error) {
     return (
-      <div className='min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-6'>
-        <div className='max-w-4xl mx-auto pt-20'>
-          <Alert
-            message='Error Loading Users'
-            description={error}
-            type='error'
-            showIcon
-            className='mb-6 rounded-2xl border-0 shadow-lg'
-          />
-          <FilterUsersForm initialValues={filterInitialValues} />
-        </div>
-      </div>
+      <ErrorComponent error={error} filterInitialValues={filterInitialValues} />
     );
   }
 
@@ -122,6 +167,13 @@ const AdminPage = () => {
       </div>
     </div>
   );
-};
+}
 
-export default AdminPage;
+// Wrap the component with Suspense to handle loading states
+export default function AdminPageWithSuspense(props: AdminPageProps) {
+  return (
+    <Suspense fallback={<LoadingComponent />}>
+      <AdminPage {...props} />
+    </Suspense>
+  );
+}

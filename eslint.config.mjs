@@ -14,12 +14,13 @@ const eslintConfig = [
   ...compat.extends('prettier'),
   ...compat.config({
     plugins: ['prettier', 'unused-imports'],
+    extends: ['plugin:react/recommended'],
     rules: {
       'prettier/prettier': 'error',
       'linebreak-style': ['error', 'unix'],
       'unused-imports/no-unused-imports': 'error',
       'unused-imports/no-unused-vars': [
-        'warn',
+        'error',
         {
           vars: 'all',
           varsIgnorePattern: '^_',
@@ -27,6 +28,11 @@ const eslintConfig = [
           argsIgnorePattern: '^_',
         },
       ],
+      // React 17+ JSX Transform - no need to import React
+      'react/jsx-uses-react': 'off',
+      'react/react-in-jsx-scope': 'off',
+      'react/no-unknown-property': 'off',
+      'react/prop-types': 'off', // Disable prop-types since we use TypeScript
     },
   }),
   {
@@ -37,15 +43,14 @@ const eslintConfig = [
       },
     },
     rules: {
-      'react/jsx-uses-react': 'off',
-      'react/react-in-jsx-scope': 'off',
-      '@typescript-eslint/no-unused-vars': ['error'],
+      '@typescript-eslint/no-unused-vars': 'off', // Let unused-imports handle this
       '@typescript-eslint/no-explicit-any': ['error'],
       '@typescript-eslint/no-unsafe-argument': ['error'],
       '@typescript-eslint/no-unsafe-assignment': ['error'],
       '@typescript-eslint/no-unsafe-call': ['error'],
       '@typescript-eslint/no-unsafe-member-access': ['error'],
       '@typescript-eslint/no-unsafe-return': ['error'],
+      '@typescript-eslint/no-require-imports': 'off', // Allow require in JS files
       'react/jsx-boolean-value': ['error', 'never'],
       'react/jsx-curly-brace-presence': ['error', 'never'],
       'react/self-closing-comp': [
@@ -65,12 +70,20 @@ const eslintConfig = [
     },
   },
   {
+    files: ['*.js', '*.jsx', '*.mjs', '*.cjs'],
+    rules: {
+      '@typescript-eslint/no-require-imports': 'off', // Allow require in JS files
+      'react/prop-types': 'off', // Disable prop-types for JS files
+    },
+  },
+  {
     ignores: [
       'node_modules/**',
       '.next/**',
       'out/**',
       'build/**',
       'next-env.d.ts',
+      'scripts/**', // Ignore Node.js scripts
     ],
   },
 ];

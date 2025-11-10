@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import { Card, Tabs, Typography, Space, Alert } from 'antd';
 import { UserOutlined, LoginOutlined } from '@ant-design/icons';
 import { useSearchParams } from 'next/navigation';
@@ -9,7 +9,17 @@ import RegisterForm from '@/components/auth/RegisterForm';
 
 const { Title, Text } = Typography;
 
-export default function AuthPage() {
+// Loading component for search params
+function SearchParamsLoader() {
+  return (
+    <div className='flex items-center justify-center h-32'>
+      <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600'></div>
+    </div>
+  );
+}
+
+// Auth content component that uses search params
+function AuthContent() {
   const [activeTab, setActiveTab] = useState('login');
   const searchParams = useSearchParams();
   const message = searchParams.get('message');
@@ -130,5 +140,14 @@ export default function AuthPage() {
         }
       `}</style>
     </div>
+  );
+}
+
+// Main AuthPage component with Suspense wrapper
+export default function AuthPage() {
+  return (
+    <Suspense fallback={<SearchParamsLoader />}>
+      <AuthContent />
+    </Suspense>
   );
 }

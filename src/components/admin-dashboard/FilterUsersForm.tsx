@@ -94,7 +94,7 @@ const FilterUsersForm = ({ initialValues }: FilterUsersFormProps) => {
           initialValues={sanitizedInitialValues}
           onFinish={handleFinish}
           submitter={{
-            render: (props, doms) => (
+            render: props => (
               <div
                 style={{
                   gridColumn: '1 / -1',
