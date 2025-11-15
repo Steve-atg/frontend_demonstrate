@@ -5,6 +5,7 @@ import { UserResponseDto } from '@/api/generated/data-contracts';
 import { Alert } from 'antd';
 import { Suspense } from 'react';
 import ModalForm from '@/components/admin-dashboard/UserModelForm';
+import { nanoid } from '@ant-design/pro-components';
 
 interface FilterUsersFormValues {
   search?: string;
@@ -170,7 +171,7 @@ async function AdminPage({ searchParams }: AdminPageProps) {
       </div>
 
       <div className='relative z-10'>
-        <ModalForm formData={formData} />
+        <ModalForm key={id ?? nanoid()} formData={formData} />
         <FilterUsersForm initialValues={filterInitialValues} />
         <UserTable tableData={userData} />
       </div>

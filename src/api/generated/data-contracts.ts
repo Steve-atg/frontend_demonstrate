@@ -214,7 +214,35 @@ export type TransactionResponseDto = object;
 
 export type UpdateTransactionDto = object;
 
-export type UpdateUserDto = object;
+export interface UpdateUserDto {
+  /**
+   * URL to the user avatar image
+   * @example "https://example.com/avatar.jpg"
+   */
+  avatar?: string;
+  /**
+   * The date of birth of the user
+   * @format date-time
+   * @example "1990-01-01T00:00:00.000Z"
+   */
+  dateOfBirth?: string;
+  /**
+   * The gender of the user
+   * @example "M"
+   */
+  gender?: "M" | "F" | "OTHER";
+  /**
+   * The password for the user account
+   * @minLength 6
+   * @example "securePassword123"
+   */
+  password: string;
+  /**
+   * The username of the user
+   * @example "john_doe"
+   */
+  username: string;
+}
 
 export interface UpgradeUserDto {
   /**

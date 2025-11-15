@@ -6,6 +6,7 @@ import { useUpdateMultipleSearchParams } from '@/hooks/useMultipleSearchParams';
 import {
   ProForm,
   ProFormDatePicker,
+  ProFormGroup,
   ProFormSelect,
   ProFormText,
 } from '@ant-design/pro-components';
@@ -27,7 +28,13 @@ const UserForm = ({ formData, onFinish }: UserFormProps) => {
         gender: values.gender as 'M' | 'F' | 'OTHER',
       };
       if (formData?.id) {
-        const resp = await usersAPI.usersControllerUpdate(formData.id, data);
+        const resp = await usersAPI.usersControllerUpdate(formData.id, {
+          avatar: values.avatar,
+          dateOfBirth: values.dateOfBirth,
+          gender: values.gender as 'M' | 'F' | 'OTHER',
+          username: values.username,
+          password: values.password,
+        });
 
         if (resp.status === 200) {
           message.success('User updated successfully.');
@@ -63,12 +70,27 @@ const UserForm = ({ formData, onFinish }: UserFormProps) => {
         resetButtonProps: false,
       }}
     >
+      <ProFormGroup>
+        <ProFormText
+          name='email'
+          label='Email'
+          placeholder='Enter email'
+          width='lg'
+        />
+        {formData?.id && (
+          <ProFormText
+            name='userLevel'
+            label='User Level'
+            disabled
+            width='xs'
+          />
+        )}
+      </ProFormGroup>
       <ProFormText
         name='username'
         label='Username'
         placeholder='Enter username'
       />
-      <ProFormText name='email' label='Email' placeholder='Enter email' />
       {!formData?.id && (
         <ProFormText
           name='password'
