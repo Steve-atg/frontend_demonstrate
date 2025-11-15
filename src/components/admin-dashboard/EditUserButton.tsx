@@ -8,10 +8,8 @@ interface EditUserButtonProps {
 
 const EditUserButton = ({ id }: EditUserButtonProps) => {
   const updateMultipleSearchParams = useUpdateMultipleSearchParams();
-  const handleEditUser = () => {
-    console.log(`Edit user with ID: ${id}`);
-    updateMultipleSearchParams({ id });
-  };
+  const handleEditUser = () =>
+    updateMultipleSearchParams({ id, modal: 'open' });
 
   return (
     <Button type='default' className='red-500' onClick={handleEditUser}>

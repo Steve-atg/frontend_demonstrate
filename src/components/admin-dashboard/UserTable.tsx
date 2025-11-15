@@ -6,6 +6,7 @@ import { useUpdateMultipleSearchParams } from '@/hooks/useMultipleSearchParams';
 import { formatDateTime } from '@/utils/dateFormatter';
 import DeleteUserButton from './DeleteUserButton';
 import EditUserButton from './EditUserButton';
+import CreateUserButton from './CreateUserButton';
 
 interface UsersTableProps {
   tableData?: UserResponseDto[];
@@ -73,6 +74,7 @@ const UsersTable = ({ tableData }: UsersTableProps) => {
         </p>
       </div>
 
+      <CreateUserButton />
       {/* Table Container */}
       <div className='backdrop-blur-xl bg-white/80 rounded-3xl shadow-2xl border-0 overflow-hidden'>
         <Table

@@ -4,6 +4,7 @@ import FilterUsersForm from '@/components/admin-dashboard/FilterUsersForm';
 import { UserResponseDto } from '@/api/generated/data-contracts';
 import { Alert } from 'antd';
 import { Suspense } from 'react';
+import ModalForm from '@/components/admin-dashboard/UserModelForm';
 
 interface FilterUsersFormValues {
   search?: string;
@@ -38,6 +39,7 @@ interface AdminPageProps {
     sortOrder?: 'asc' | 'desc';
     page?: string;
     limit?: string;
+    id?: string;
   };
 }
 
@@ -101,6 +103,7 @@ async function AdminPage({ searchParams }: AdminPageProps) {
   const sortOrder = searchParams.sortOrder;
   const page = searchParams.page ? Number(searchParams.page) : undefined;
   const limit = searchParams.limit ? Number(searchParams.limit) : undefined;
+  const id = searchParams.id || undefined;
 
   // Create filter initial values object
   const filterInitialValues = {
@@ -122,9 +125,10 @@ async function AdminPage({ searchParams }: AdminPageProps) {
   // Server-side data fetching
   let userData: UserResponseDto[] = [];
   let error: string | null = null;
+  let formData: UserResponseDto | undefined = undefined;
 
   try {
-    const response = await usersAPI.usersControllerFindAll({
+    const usersResp = await usersAPI.usersControllerFindAll({
       search,
       username,
       email,
@@ -141,7 +145,11 @@ async function AdminPage({ searchParams }: AdminPageProps) {
       page,
       limit,
     });
-    userData = response.data.data || [];
+    userData = usersResp.data.data || [];
+
+    const userResp = id ? await usersAPI.usersControllerFindOne(id) : null;
+    formData = userResp?.data;
+    console.log('Form Data:', formData);
   } catch (err) {
     error = err instanceof Error ? err.message : 'Failed to load users';
     console.error('Error fetching users:', err);
@@ -162,6 +170,7 @@ async function AdminPage({ searchParams }: AdminPageProps) {
       </div>
 
       <div className='relative z-10'>
+        <ModalForm formData={formData} />
         <FilterUsersForm initialValues={filterInitialValues} />
         <UserTable tableData={userData} />
       </div>
