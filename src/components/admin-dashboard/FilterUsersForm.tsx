@@ -7,14 +7,14 @@ import {
   ProFormDigit,
   ProFormInstance,
 } from '@ant-design/pro-components';
-import { Button, Collapse } from 'antd';
+import { Button, Collapse, Input } from 'antd';
 import { useUpdateMultipleSearchParams } from '../../hooks/useMultipleSearchParams';
 import {
   SearchOutlined,
   ClearOutlined,
-  FilterOutlined,
+  ArrowDownOutlined,
 } from '@ant-design/icons';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 interface FilterUsersFormValues {
   bornAfter?: string;
@@ -38,6 +38,7 @@ interface FilterUsersFormProps {
 
 const FilterUsersForm = ({ initialValues }: FilterUsersFormProps) => {
   const updateMultipleSearchParams = useUpdateMultipleSearchParams();
+  const [activeKey, setActiveKey] = useState<string[]>([]);
 
   const formRef = useRef<ProFormInstance<FilterUsersFormValues>>(null);
 
@@ -84,8 +85,17 @@ const FilterUsersForm = ({ initialValues }: FilterUsersFormProps) => {
     {
       key: '1',
       label: (
-        <span>
-          <FilterOutlined /> Filter Users
+        <span className='flex items-center justify-end'>
+          <div>
+            {!activeKey.includes('1') && (
+              <Input.Search
+                size='small'
+                placeholder='search'
+                enterButton
+                onSearch={value => handleFinish({ search: value })}
+              />
+            )}
+          </div>
         </span>
       ),
       children: (
@@ -107,19 +117,19 @@ const FilterUsersForm = ({ initialValues }: FilterUsersFormProps) => {
                 }}
               >
                 <Button
+                  icon={<ClearOutlined />}
+                  onClick={handleReset}
+                  size='small'
+                >
+                  Reset
+                </Button>
+                <Button
                   type='primary'
                   icon={<SearchOutlined />}
                   onClick={() => props.form?.submit()}
                   size='small'
                 >
                   Filter
-                </Button>
-                <Button
-                  icon={<ClearOutlined />}
-                  onClick={handleReset}
-                  size='small'
-                >
-                  Reset
                 </Button>
               </div>
             ),
@@ -242,7 +252,20 @@ const FilterUsersForm = ({ initialValues }: FilterUsersFormProps) => {
 
   return (
     <div className='mb-4'>
-      <Collapse items={collapseItems} />
+      <Collapse
+        items={collapseItems}
+        activeKey={activeKey}
+        onChange={key => setActiveKey(key)}
+        collapsible='icon'
+        expandIcon={panelProps => (
+          <div className='flex gap-2'>
+            <ArrowDownOutlined
+              className={`transition-transform duration-300 ease-in-out ${panelProps.isActive ? '' : '-rotate-90'}`}
+            />
+            Filter Users
+          </div>
+        )}
+      />
     </div>
   );
 };
