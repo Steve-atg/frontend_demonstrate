@@ -4,7 +4,8 @@ import { useUpdateMultipleSearchParams } from '../../hooks/useMultipleSearchPara
 
 const EditUserButton = () => {
   const updateMultipleSearchParams = useUpdateMultipleSearchParams();
-  const handleCreateUser = () => updateMultipleSearchParams({ modal: 'open' });
+  const handleCreateUser = () =>
+    updateMultipleSearchParams({ modal: 'create' });
 
   return (
     <Button type='default' onClick={handleCreateUser}>
