@@ -76,6 +76,7 @@ const UserForm = ({ formData, onFinish }: UserFormProps) => {
           label='Email'
           placeholder='Enter email'
           width='lg'
+          disabled={!!formData?.id}
         />
         {formData?.id && (
           <ProFormText

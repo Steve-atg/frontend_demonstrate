@@ -150,7 +150,6 @@ async function AdminPage({ searchParams }: AdminPageProps) {
 
     const userResp = id ? await usersAPI.usersControllerFindOne(id) : null;
     formData = userResp?.data;
-    console.log('Form Data:', formData);
   } catch (err) {
     error = err instanceof Error ? err.message : 'Failed to load users';
     console.error('Error fetching users:', err);
