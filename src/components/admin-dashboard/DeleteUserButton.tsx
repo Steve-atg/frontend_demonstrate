@@ -25,7 +25,12 @@ const DeleteUserButton = ({ id }: DeleteUserButtonProps) => {
   };
 
   return (
-    <Button type='default' className='red-500' onClick={handleDeleteUser}>
+    <Button
+      size='small'
+      type='default'
+      className='red-500'
+      onClick={handleDeleteUser}
+    >
       Delete
     </Button>
   );

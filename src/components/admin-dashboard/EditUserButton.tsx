@@ -12,7 +12,12 @@ const EditUserButton = ({ id }: EditUserButtonProps) => {
     updateMultipleSearchParams({ id, modal: 'open' });
 
   return (
-    <Button type='default' className='red-500' onClick={handleEditUser}>
+    <Button
+      size='small'
+      type='default'
+      className='red-500'
+      onClick={handleEditUser}
+    >
       Edit
     </Button>
   );
