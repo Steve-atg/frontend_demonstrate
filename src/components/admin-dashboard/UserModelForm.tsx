@@ -52,7 +52,7 @@ const UserForm = ({ formData, onFinish }: UserFormProps) => {
         message.error('Failed to create user.');
       }
     } catch (error) {
-      message.error('An error occurred while submitting the form.');
+      message.error(`An error occurred while submitting the form. ${error}`);
     } finally {
     }
   };

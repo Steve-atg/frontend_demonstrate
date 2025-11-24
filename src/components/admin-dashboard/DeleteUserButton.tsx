@@ -18,7 +18,7 @@ const DeleteUserButton = ({ id }: DeleteUserButtonProps) => {
       }
       message.error('Failed to delete user.');
     } catch (error) {
-      message.error('An error occurred while deleting the user.');
+      message.error(`An error occurred while deleting the user. ${error}`);
     } finally {
       refresh();
     }
