@@ -7,6 +7,7 @@ import { formatDateTime } from '@/utils/dateFormatter';
 import DeleteUserButton from './DeleteUserButton';
 import EditUserButton from './EditUserButton';
 import CreateUserButton from './CreateUserButton';
+import UpgradeUserButton from './UpgradeUserButton';
 
 interface UsersTableProps {
   tableData?: UserResponseDto[];
@@ -56,6 +57,7 @@ const UsersTable = ({ tableData }: UsersTableProps) => {
         <div className='flex gap-1'>
           <EditUserButton id={id} />
           <DeleteUserButton id={id} />
+          <UpgradeUserButton id={id} />
         </div>
       ),
     },

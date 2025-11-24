@@ -125,7 +125,9 @@ const ModalForm = ({ formData }: ModalFormProps) => {
   const updateMultipleSearchParams = useUpdateMultipleSearchParams();
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
-  const isModalOpen = !!searchParams.get('modal');
+  const isModalOpen = ['create', 'edit'].includes(
+    searchParams.get('modal') || ''
+  );
 
   const handleCloseModal = () => {
     updateMultipleSearchParams({ modal: null, id: null });

@@ -6,6 +6,7 @@ import { Alert } from 'antd';
 import { Suspense } from 'react';
 import ModalForm from '@/components/admin-dashboard/UserModelForm';
 import { nanoid } from '@ant-design/pro-components';
+import GradeChangePopupForm from '@/components/admin-dashboard/GradeChangePopupForm';
 
 interface FilterUsersFormValues {
   search?: string;
@@ -171,6 +172,7 @@ async function AdminPage({ searchParams }: AdminPageProps) {
 
       <div className='relative z-10'>
         <ModalForm key={id ?? nanoid()} formData={formData} />
+        <GradeChangePopupForm key={id ?? nanoid()} formData={formData} />
         <FilterUsersForm initialValues={filterInitialValues} />
         <UserTable tableData={userData} />
       </div>

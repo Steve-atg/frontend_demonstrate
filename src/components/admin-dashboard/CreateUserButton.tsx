@@ -8,7 +8,7 @@ const EditUserButton = () => {
     updateMultipleSearchParams({ modal: 'create' });
 
   return (
-    <Button type='default' onClick={handleCreateUser}>
+    <Button type='default' size='small' onClick={handleCreateUser}>
       Create User
     </Button>
   );
