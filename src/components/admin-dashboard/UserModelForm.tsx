@@ -60,9 +60,6 @@ const UserForm = ({ formData, onFinish }: UserFormProps) => {
     <ProForm<UserFormValues>
       initialValues={formData ?? {}}
       onFinish={handleSubmit}
-      onValuesChange={changedValues => {
-        console.log('Changed Values:', changedValues);
-      }}
       submitter={{
         searchConfig: {
           submitText: formData?.id ? 'Update User' : 'Create User',
