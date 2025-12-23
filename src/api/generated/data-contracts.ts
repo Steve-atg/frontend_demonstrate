@@ -41,7 +41,7 @@ export interface CreateTransactionDto {
    * The currency code (3 characters)
    * @minLength 3
    * @maxLength 3
-   * @example "USD"
+   * @example "HKD"
    */
   currency: string;
   /**
@@ -113,6 +113,31 @@ export interface LoginDto {
    * @example "securePassword123"
    */
   password: string;
+}
+
+export interface PaginatedTransactionsResponseDto {
+  /** Array of transactions */
+  data: TransactionResponseDto[];
+  /**
+   * Number of items per page
+   * @example 10
+   */
+  limit: number;
+  /**
+   * Current page number
+   * @example 1
+   */
+  page: number;
+  /**
+   * Total number of transactions matching the query
+   * @example 100
+   */
+  total: number;
+  /**
+   * Total number of pages
+   * @example 10
+   */
+  totalPages: number;
 }
 
 export interface PaginatedUsersResponseDto {
@@ -210,11 +235,124 @@ export interface RegisterDto {
   username: string;
 }
 
-export type TransactionResponseDto = object;
+export interface TransactionResponseDto {
+  /**
+   * Transaction amount
+   * @example 29.99
+   */
+  amount: number;
+  /** Associated categories */
+  categories?: any[];
+  /**
+   * Creation timestamp
+   * @format date-time
+   * @example "2024-01-15T10:30:00.000Z"
+   */
+  createdAt: string;
+  /**
+   * Currency code
+   * @example "USD"
+   */
+  currency: string;
+  /**
+   * Transaction description
+   * @example "Grocery shopping at Walmart"
+   */
+  description?: string;
+  /**
+   * Transaction unique identifier
+   * @example "123e4567-e89b-12d3-a456-426614174000"
+   */
+  id: string;
+  /**
+   * Date when the transaction occurred
+   * @format date-time
+   * @example "2024-01-15T10:30:00.000Z"
+   */
+  transactionDate: string;
+  /**
+   * Transaction type
+   * @example "SPEND"
+   */
+  type: string;
+  /**
+   * Last update timestamp
+   * @format date-time
+   * @example "2024-01-15T10:30:00.000Z"
+   */
+  updatedAt: string;
+}
 
-export type UpdateTransactionDto = object;
+export interface UpdateTransactionDto {
+  /**
+   * The amount of the transaction
+   * @min 0.01
+   * @example 29.99
+   */
+  amount?: number;
+  /**
+   * Array of category IDs associated with the transaction
+   * @example ["123e4567-e89b-12d3-a456-426614174001","123e4567-e89b-12d3-a456-426614174002"]
+   */
+  categoryIds?: string[];
+  /**
+   * The currency code (3 characters)
+   * @minLength 3
+   * @maxLength 3
+   * @example "HKD"
+   */
+  currency?: string;
+  /**
+   * Optional description of the transaction
+   * @example "Grocery shopping at Walmart"
+   */
+  description?: string;
+  /**
+   * The date when the transaction occurred
+   * @example "2024-01-15T10:30:00.000Z"
+   */
+  transactionDate?: string;
+  /**
+   * The type of transaction
+   * @example "SPEND"
+   */
+  type?: "SPEND" | "INCOME";
+  /**
+   * The ID of the user who made the transaction
+   * @example "123e4567-e89b-12d3-a456-426614174000"
+   */
+  userId?: string;
+}
 
-export type UpdateUserDto = object;
+export interface UpdateUserDto {
+  /**
+   * URL to the user avatar image
+   * @example "https://example.com/avatar.jpg"
+   */
+  avatar?: string;
+  /**
+   * The date of birth of the user
+   * @format date-time
+   * @example "1990-01-01T00:00:00.000Z"
+   */
+  dateOfBirth?: string;
+  /**
+   * The gender of the user
+   * @example "M"
+   */
+  gender?: "M" | "F" | "OTHER";
+  /**
+   * The password for the user account
+   * @minLength 6
+   * @example "securePassword123"
+   */
+  password: string;
+  /**
+   * The username of the user
+   * @example "john_doe"
+   */
+  username: string;
+}
 
 export interface UpgradeUserDto {
   /**

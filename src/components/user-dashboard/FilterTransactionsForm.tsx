@@ -16,38 +16,39 @@ import {
 } from '@ant-design/icons';
 import { useRef, useState } from 'react';
 
-interface FilterUsersFormValues {
-  bornAfter?: string;
-  bornBefore?: string;
+interface FilterTransactionsFormValues {
+  search?: string;
+  description?: string;
+  type?: 'SPEND' | 'INCOME';
+  currency?: string;
+  minAmount?: number;
+  maxAmount?: number;
+  transactionDateAfter?: string;
+  transactionDateBefore?: string;
   createdAfter?: string;
   createdBefore?: string;
-  email?: string;
-  gender?: 'M' | 'F' | 'OTHER';
-  maxUserLevel?: number;
-  minUserLevel?: number;
-  search?: string;
-  sortBy?: 'username' | 'email' | 'userLevel' | 'createdAt' | 'updatedAt';
+  sortBy?: 'transactionDate' | 'amount' | 'createdAt' | 'updatedAt';
   sortOrder?: 'desc' | 'asc';
-  userLevel?: number;
-  username?: string;
 }
 
-interface FilterUsersFormProps {
-  initialValues?: FilterUsersFormValues;
+interface FilterTransactionsFormProps {
+  initialValues?: FilterTransactionsFormValues;
 }
 
-const FilterUsersForm = ({ initialValues }: FilterUsersFormProps) => {
+const FilterTransactionsForm = ({
+  initialValues,
+}: FilterTransactionsFormProps) => {
   const updateMultipleSearchParams = useUpdateMultipleSearchParams();
   const [activeKey, setActiveKey] = useState<string[]>([]);
 
-  const formRef = useRef<ProFormInstance<FilterUsersFormValues>>(null);
+  const formRef = useRef<ProFormInstance<FilterTransactionsFormValues>>(null);
 
   // Sanitize initialValues to ensure it's a plain object
   const sanitizedInitialValues = initialValues
     ? JSON.parse(JSON.stringify(initialValues))
     : {};
 
-  const handleFinish = async (values: FilterUsersFormValues) => {
+  const handleFinish = async (values: FilterTransactionsFormValues) => {
     const convertedValues = Object.entries(values).reduce(
       (acc, [key, value]) => {
         if (value !== undefined && value !== null) acc[key] = String(value);
@@ -62,21 +63,20 @@ const FilterUsersForm = ({ initialValues }: FilterUsersFormProps) => {
 
   const handleReset = async () => {
     await updateMultipleSearchParams({
-      bornAfter: null,
-      bornBefore: null,
+      search: null,
+      description: null,
+      type: null,
+      currency: null,
+      minAmount: null,
+      maxAmount: null,
+      transactionDateAfter: null,
+      transactionDateBefore: null,
       createdAfter: null,
       createdBefore: null,
-      email: null,
-      gender: null,
-      limit: null,
-      maxUserLevel: null,
-      minUserLevel: null,
-      page: null,
-      search: null,
       sortBy: null,
       sortOrder: null,
-      userLevel: null,
-      username: null,
+      page: null,
+      limit: null,
     });
     formRef.current?.resetFields();
   };
@@ -99,7 +99,7 @@ const FilterUsersForm = ({ initialValues }: FilterUsersFormProps) => {
         </span>
       ),
       children: (
-        <ProForm<FilterUsersFormValues>
+        <ProForm<FilterTransactionsFormValues>
           formRef={formRef}
           initialValues={sanitizedInitialValues}
           onFinish={handleFinish}
@@ -147,65 +147,68 @@ const FilterUsersForm = ({ initialValues }: FilterUsersFormProps) => {
           <ProFormText
             name='search'
             label='Search'
-            placeholder='Search users'
+            placeholder='Search description'
             style={{ width: '100%' }}
           />
 
           <ProFormText
-            name='username'
-            label='Username'
-            placeholder='Enter username'
-            style={{ width: '100%' }}
-          />
-
-          <ProFormText
-            name='email'
-            label='Email'
-            placeholder='Enter email'
+            name='description'
+            label='Description'
+            placeholder='Enter description'
             style={{ width: '100%' }}
           />
 
           <ProFormSelect
-            name='gender'
-            label='Gender'
-            placeholder='Select gender'
+            name='type'
+            label='Transaction Type'
+            placeholder='Select type'
             style={{ width: '100%' }}
             options={[
-              { label: 'Male', value: 'M' },
-              { label: 'Female', value: 'F' },
-              { label: 'Other', value: 'OTHER' },
+              { label: 'Income', value: 'INCOME' },
+              { label: 'Spend', value: 'SPEND' },
             ]}
           />
 
-          {/* User Level Filters */}
+          <ProFormText
+            name='currency'
+            label='Currency'
+            placeholder='e.g., USD, HKD'
+            style={{ width: '100%' }}
+          />
+
+          {/* Amount Filters */}
           <ProFormDigit
-            name='userLevel'
-            label='User Level'
-            placeholder='Exact level'
-            min={1}
-            max={99}
+            name='minAmount'
+            label='Min Amount'
+            placeholder='Minimum amount'
+            min={0}
             style={{ width: '100%' }}
           />
 
           <ProFormDigit
-            name='minUserLevel'
-            label='Min Level'
-            placeholder='Minimum level'
-            min={1}
-            max={99}
+            name='maxAmount'
+            label='Max Amount'
+            placeholder='Maximum amount'
+            min={0}
             style={{ width: '100%' }}
           />
 
-          <ProFormDigit
-            name='maxUserLevel'
-            label='Max Level'
-            placeholder='Maximum level'
-            min={1}
-            max={99}
+          {/* Transaction Date Filters */}
+          <ProFormDatePicker
+            name='transactionDateAfter'
+            label='Transaction After'
+            placeholder='From date'
             style={{ width: '100%' }}
           />
 
-          {/* Date Filters */}
+          <ProFormDatePicker
+            name='transactionDateBefore'
+            label='Transaction Before'
+            placeholder='To date'
+            style={{ width: '100%' }}
+          />
+
+          {/* Created Date Filters */}
           <ProFormDatePicker
             name='createdAfter'
             label='Created After'
@@ -227,9 +230,8 @@ const FilterUsersForm = ({ initialValues }: FilterUsersFormProps) => {
             placeholder='Sort field'
             style={{ width: '100%' }}
             options={[
-              { label: 'Username', value: 'username' },
-              { label: 'Email', value: 'email' },
-              { label: 'User Level', value: 'userLevel' },
+              { label: 'Transaction Date', value: 'transactionDate' },
+              { label: 'Amount', value: 'amount' },
               { label: 'Created At', value: 'createdAt' },
               { label: 'Updated At', value: 'updatedAt' },
             ]}
@@ -255,14 +257,14 @@ const FilterUsersForm = ({ initialValues }: FilterUsersFormProps) => {
       <Collapse
         items={collapseItems}
         activeKey={activeKey}
-        onChange={key => setActiveKey(key)}
+        onChange={key => setActiveKey(key as string[])}
         collapsible='icon'
         expandIcon={panelProps => (
           <div className='flex gap-2'>
             <ArrowDownOutlined
               className={`transition-transform duration-300 ease-in-out ${panelProps.isActive ? '' : '-rotate-90'}`}
             />
-            Filter Users
+            Filter Transactions
           </div>
         )}
       />
@@ -270,4 +272,4 @@ const FilterUsersForm = ({ initialValues }: FilterUsersFormProps) => {
   );
 };
 
-export default FilterUsersForm;
+export default FilterTransactionsForm;

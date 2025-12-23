@@ -9,7 +9,8 @@ dayjs.extend(relativeTime);
  * @param dateString - ISO date string or any valid date format
  * @returns Formatted date string in YYYY/MM/DD format
  */
-export const formatDate = (dateString: string): string => {
+export const formatDate = (dateString?: string) => {
+  if (!dateString) return '';
   return dayjs(dateString).format('YYYY/MM/DD');
 };
 

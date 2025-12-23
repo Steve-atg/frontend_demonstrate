@@ -1,19 +1,18 @@
 'use client';
 import { Table } from 'antd';
-import { UserResponseDto } from '@/api/generated/data-contracts';
+import { TransactionResponseDto } from '@/api/generated/data-contracts';
 import { useSearchParams } from 'next/navigation';
 import { useUpdateMultipleSearchParams } from '@/hooks/useMultipleSearchParams';
 import { formatDateTime } from '@/utils/dateFormatter';
-import DeleteUserButton from './DeleteUserButton';
-import EditUserButton from './EditUserButton';
-import CreateUserButton from './CreateUserButton';
-import UpgradeUserButton from './UpgradeUserButton';
+import DeleteTransactionButton from './DeleteTransactionButton';
+import EditTransactionButton from './EditTransactionButton';
+import CreateTransactionButton from './CreateTransactionButton';
 
-interface UsersTableProps {
-  tableData?: UserResponseDto[];
+interface TransactionTableProps {
+  tableData?: TransactionResponseDto[];
 }
 
-const UsersTable = ({ tableData }: UsersTableProps) => {
+const TransactionTable = ({ tableData }: TransactionTableProps) => {
   const updateMultipleSearchParams = useUpdateMultipleSearchParams();
 
   const searchParams = useSearchParams();
@@ -23,19 +22,52 @@ const UsersTable = ({ tableData }: UsersTableProps) => {
   // Table columns configuration
   const columns = [
     {
-      title: 'Username',
-      dataIndex: 'username',
-      key: 'username',
+      title: 'Transaction Date',
+      dataIndex: 'transactionDate',
+      key: 'transactionDate',
+      render: (date: string) => formatDateTime(date),
     },
     {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
+      title: 'Type',
+      dataIndex: 'type',
+      key: 'type',
+      render: (type: string) => (
+        <span
+          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+            type === 'INCOME'
+              ? 'bg-green-100 text-green-800'
+              : 'bg-red-100 text-red-800'
+          }`}
+        >
+          {type}
+        </span>
+      ),
     },
     {
-      title: 'Level',
-      dataIndex: 'userLevel',
-      key: 'userLevel',
+      title: 'Description',
+      dataIndex: 'description',
+      key: 'description',
+      render: (desc: string) => desc || 'N/A',
+    },
+    {
+      title: 'Amount',
+      dataIndex: 'amount',
+      key: 'amount',
+      render: (amount: number, record: TransactionResponseDto) => (
+        <span
+          className={`font-semibold ${
+            record.type === 'INCOME' ? 'text-green-600' : 'text-red-600'
+          }`}
+        >
+          {record.type === 'INCOME' ? '+' : '-'}
+          {amount.toFixed(2)}
+        </span>
+      ),
+    },
+    {
+      title: 'Currency',
+      dataIndex: 'currency',
+      key: 'currency',
     },
     {
       title: 'Created At',
@@ -44,20 +76,13 @@ const UsersTable = ({ tableData }: UsersTableProps) => {
       render: (date: string) => formatDateTime(date),
     },
     {
-      title: 'Updated At',
-      dataIndex: 'updatedAt',
-      key: 'updatedAt',
-      render: (date: string) => formatDateTime(date),
-    },
-    {
       title: 'Action',
       dataIndex: 'id',
       key: 'id',
       render: (id: string) => (
         <div className='flex gap-1'>
-          <EditUserButton id={id} />
-          <DeleteUserButton id={id} />
-          <UpgradeUserButton id={id} />
+          <EditTransactionButton id={id} />
+          <DeleteTransactionButton id={id} />
         </div>
       ),
     },
@@ -68,15 +93,16 @@ const UsersTable = ({ tableData }: UsersTableProps) => {
       {/* Header */}
       <div className='mb-8'>
         <h2 className='text-3xl font-semibold text-gray-900 tracking-tight mb-2'>
-          User Management
+          Transaction Management
         </h2>
         <p className='text-lg text-gray-600'>
-          Manage and monitor user accounts with advanced filtering and
-          pagination.
+          Track and manage your financial transactions with advanced filtering
+          and pagination.
         </p>
       </div>
 
-      <CreateUserButton />
+      <CreateTransactionButton />
+
       {/* Table Container */}
       <div className='backdrop-blur-xl bg-white/80 rounded-3xl shadow-2xl border-0 overflow-hidden'>
         <Table
@@ -90,7 +116,7 @@ const UsersTable = ({ tableData }: UsersTableProps) => {
             showSizeChanger: true,
             showQuickJumper: true,
             showTotal: (total, range) =>
-              `${range[0]}-${range[1]} of ${total} users`,
+              `${range[0]}-${range[1]} of ${total} transactions`,
             async onChange(page, pageSize) {
               await updateMultipleSearchParams({
                 page: page.toString(),
@@ -150,17 +176,13 @@ const UsersTable = ({ tableData }: UsersTableProps) => {
           font-weight: 600;
         }
 
-        .apple-pagination .ant-pagination-options {
-          margin-left: 16px;
-        }
-
-        .apple-pagination .ant-select-selector {
+        .apple-pagination .ant-pagination-prev,
+        .apple-pagination .ant-pagination-next {
           border-radius: 8px;
-          border: 1px solid rgba(59, 130, 246, 0.2);
         }
       `}</style>
     </div>
   );
 };
 
-export default UsersTable;
+export default TransactionTable;

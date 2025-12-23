@@ -72,9 +72,7 @@ export const useCreateMyTransaction = () => {
   return useSWRMutation(
     '/transactions/me/transactions',
     async (url: string, { arg }: { arg: CreateTransactionDto }) => {
-      return await transactionsAPI.transactionsControllerCreateMyTransaction(
-        arg
-      );
+      return await transactionsAPI.transactionsControllerCreate(arg);
     }
   );
 };
