@@ -1,5 +1,3 @@
-import { getServerSession } from 'next-auth';
-import { authOptions } from '../api/auth/[...nextauth]/route';
 import { transactionsAPI } from '@/api/client';
 import TransactionTable from '@/components/user-dashboard/TransactionTable';
 import FilterTransactionsForm from '@/components/user-dashboard/FilterTransactionsForm';
@@ -86,8 +84,6 @@ function ErrorComponent({
 }
 
 async function UserDashboardPage({ searchParams }: UserDashboardPageProps) {
-  const serverSession = await getServerSession(authOptions);
-
   // Extract filter-related search params from server-side searchParams
   const search = searchParams.search || undefined;
   const description = searchParams.description || undefined;

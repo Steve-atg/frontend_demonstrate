@@ -2,7 +2,6 @@
 
 import { useUpdateMultipleSearchParams } from '@/hooks/useMultipleSearchParams';
 import { Button } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
 
 const CreateTransactionButton = () => {
   const updateMultipleSearchParams = useUpdateMultipleSearchParams();
