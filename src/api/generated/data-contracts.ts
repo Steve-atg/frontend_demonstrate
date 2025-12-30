@@ -59,11 +59,6 @@ export interface CreateTransactionDto {
    * @example "SPEND"
    */
   type: "SPEND" | "INCOME";
-  /**
-   * The ID of the user who made the transaction
-   * @example "123e4567-e89b-12d3-a456-426614174000"
-   */
-  userId: string;
 }
 
 export interface CreateUserDto {
@@ -317,11 +312,6 @@ export interface UpdateTransactionDto {
    * @example "SPEND"
    */
   type?: "SPEND" | "INCOME";
-  /**
-   * The ID of the user who made the transaction
-   * @example "123e4567-e89b-12d3-a456-426614174000"
-   */
-  userId?: string;
 }
 
 export interface UpdateUserDto {

@@ -57,7 +57,6 @@ const TransactionForm = ({ formData, onFinish }: TransactionFormProps) => {
 
       const resp = await transactionsAPI.transactionsControllerCreate({
         ...data,
-        userId: '', // Will be set by backend from auth token
       });
 
       if (resp.status === 201) {
